@@ -1,27 +1,27 @@
 part of three_objects;
 
-var _meshinverseMatrix = new Matrix4();
-var _meshray = new Ray(null, null);
-var _meshsphere = new Sphere(null, null);
+var _meshinverseMatrix = Matrix4();
+var _meshray = Ray(null, null);
+var _meshsphere = Sphere(null, null);
 
-var _vA = new Vector3.init();
-var _vB = new Vector3.init();
-var _vC = new Vector3.init();
+var _vA = Vector3.init();
+var _vB = Vector3.init();
+var _vC = Vector3.init();
 
-var _tempA = new Vector3.init();
-var _tempB = new Vector3.init();
-var _tempC = new Vector3.init();
+var _tempA = Vector3.init();
+var _tempB = Vector3.init();
+var _tempC = Vector3.init();
 
-var _morphA = new Vector3.init();
-var _morphB = new Vector3.init();
-var _morphC = new Vector3.init();
+var _morphA = Vector3.init();
+var _morphB = Vector3.init();
+var _morphC = Vector3.init();
 
-var _uvA = new Vector2(null, null);
-var _uvB = new Vector2(null, null);
-var _uvC = new Vector2(null, null);
+var _uvA = Vector2(null, null);
+var _uvB = Vector2(null, null);
+var _uvC = Vector2(null, null);
 
-var _intersectionPoint = new Vector3.init();
-var _intersectionPointWorld = new Vector3.init();
+var _intersectionPoint = Vector3.init();
+var _intersectionPointWorld = Vector3.init();
 
 class Mesh extends Object3D {
   String type = "Mesh";
@@ -32,14 +32,14 @@ class Mesh extends Object3D {
     this.geometry = geometry ?? BufferGeometry();
     this.material = material;
 
-    this.updateMorphTargets();
+    updateMorphTargets();
   }
 
   Mesh.fromJSON(Map<String, dynamic> json, Map<String, dynamic> rootJSON)
       : super.fromJSON(json, rootJSON) {}
 
   clone([bool? recursive = true]) {
-    return Mesh(this.geometry!, this.material).copy(this, recursive);
+    return Mesh(geometry!, material).copy(this, recursive);
   }
 
   copy(Object3D source, [bool? recursive]) {
@@ -48,16 +48,16 @@ class Mesh extends Object3D {
     Mesh source1 = source as Mesh;
 
     if (source1.morphTargetInfluences != null) {
-      this.morphTargetInfluences = source1.morphTargetInfluences!.sublist(0);
+      morphTargetInfluences = source1.morphTargetInfluences!.sublist(0);
     }
 
     if (source1.morphTargetDictionary != null) {
-      this.morphTargetDictionary =
+      morphTargetDictionary =
           json.decode(json.encode(source1.morphTargetDictionary));
     }
 
-    this.material = source1.material;
-    this.geometry = source1.geometry;
+    material = source1.material;
+    geometry = source1.geometry;
 
     return this;
   }
@@ -69,18 +69,18 @@ class Mesh extends Object3D {
       var morphAttributes = geometry.morphAttributes;
       var keys = morphAttributes.keys.toList();
 
-      if (keys.length > 0) {
+      if (keys.isNotEmpty) {
         List<BufferAttribute>? morphAttribute = morphAttributes[keys[0]];
 
         if (morphAttribute != null) {
-          this.morphTargetInfluences = [];
-          this.morphTargetDictionary = {};
+          morphTargetInfluences = [];
+          morphTargetDictionary = {};
 
           for (var m = 0, ml = morphAttribute.length; m < ml; m++) {
             String name = morphAttribute[m].name ?? m.toString();
 
-            this.morphTargetInfluences!.add(0.0);
-            this.morphTargetDictionary![name] = m;
+            morphTargetInfluences!.add(0.0);
+            morphTargetDictionary![name] = m;
           }
         }
       }
@@ -379,7 +379,7 @@ Intersection? checkBufferGeometryIntersection(object, material, raycaster, ray,
       "a": a,
       "b": b,
       "c": c,
-      "normal": new Vector3.init(),
+      "normal": Vector3.init(),
       "materialIndex": 0
     });
 

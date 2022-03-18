@@ -1,19 +1,19 @@
 part of three_objects;
 
-var _pointsinverseMatrix = new Matrix4();
-var _pointsray = new Ray(null, null);
-var _pointssphere = new Sphere(null, null);
-var _position = new Vector3.init();
+var _pointsinverseMatrix = Matrix4();
+var _pointsray = Ray(null, null);
+var _pointssphere = Sphere(null, null);
+var _position = Vector3.init();
 
 class Points extends Object3D {
   Points(BufferGeometry geometry, material) {
-    this.type = 'Points';
-    this.isPoints = true;
+    type = 'Points';
+    isPoints = true;
 
     this.geometry = geometry;
     this.material = material;
 
-    this.updateMorphTargets();
+    updateMorphTargets();
   }
 
   Points.fromJSON(Map<String, dynamic> json, Map<String, dynamic> rootJSON)
@@ -24,8 +24,8 @@ class Points extends Object3D {
 
     Points source1 = source as Points;
 
-    this.material = source1.material;
-    this.geometry = source1.geometry;
+    material = source1.material;
+    geometry = source1.geometry;
 
     return this;
   }
@@ -52,7 +52,7 @@ class Points extends Object3D {
     _pointsray.copy(raycaster.ray).applyMatrix4(_pointsinverseMatrix);
 
     var localThreshold =
-        threshold / ((this.scale.x + this.scale.y + this.scale.z) / 3);
+        threshold / ((scale.x + scale.y + scale.z) / 3);
     var localThresholdSq = localThreshold * localThreshold;
 
     var index = geometry.index;
@@ -97,14 +97,14 @@ class Points extends Object3D {
         var morphAttribute = morphAttributes[keys[0]];
 
         if (morphAttribute != null) {
-          this.morphTargetInfluences = [];
-          this.morphTargetDictionary = {};
+          morphTargetInfluences = [];
+          morphTargetDictionary = {};
 
           for (var m = 0, ml = morphAttribute.length; m < ml; m++) {
             var name = morphAttribute[m].name ?? m.toString();
 
-            this.morphTargetInfluences!.add(0);
-            this.morphTargetDictionary![name] = m;
+            morphTargetInfluences!.add(0);
+            morphTargetDictionary![name] = m;
           }
         }
       }
@@ -124,7 +124,7 @@ testPoint(point, index, localThresholdSq, matrixWorld, raycaster, intersects,
   var rayPointDistanceSq = _pointsray.distanceSqToPoint(point);
 
   if (rayPointDistanceSq < localThresholdSq) {
-    var intersectPoint = new Vector3.init();
+    var intersectPoint = Vector3.init();
 
     _pointsray.closestPointToPoint(point, intersectPoint);
     intersectPoint.applyMatrix4(matrixWorld);

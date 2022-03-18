@@ -2,32 +2,32 @@ part of three_objects;
 
 var _geometry;
 
-var _intersectPoint = new Vector3.init();
-var _worldScale = new Vector3.init();
-var _mvPosition = new Vector3.init();
+var _intersectPoint = Vector3.init();
+var _worldScale = Vector3.init();
+var _mvPosition = Vector3.init();
 
-var _alignedPosition = new Vector2(null, null);
-var _rotatedPosition = new Vector2(null, null);
-var _viewWorldMatrix = new Matrix4();
+var _alignedPosition = Vector2(null, null);
+var _rotatedPosition = Vector2(null, null);
+var _viewWorldMatrix = Matrix4();
 
-var _spritevA = new Vector3.init();
-var _spritevB = new Vector3.init();
-var _spritevC = new Vector3.init();
+var _spritevA = Vector3.init();
+var _spritevB = Vector3.init();
+var _spritevC = Vector3.init();
 
-var _spriteuvA = new Vector2(null, null);
-var _spriteuvB = new Vector2(null, null);
-var _spriteuvC = new Vector2(null, null);
+var _spriteuvA = Vector2(null, null);
+var _spriteuvB = Vector2(null, null);
+var _spriteuvC = Vector2(null, null);
 
 class Sprite extends Object3D {
-  Vector2 center = new Vector2(0.5, 0.5);
+  Vector2 center = Vector2(0.5, 0.5);
 
   bool isSprite = true;
 
   Sprite(material) : super() {
-    this.type = 'Sprite';
+    type = 'Sprite';
 
     if (_geometry == null) {
-      _geometry = new BufferGeometry();
+      _geometry = BufferGeometry();
 
       var float32Array = Float32Array(20).set([
         -0.5,
@@ -52,17 +52,17 @@ class Sprite extends Object3D {
         1
       ]);
 
-      var interleavedBuffer = new InterleavedBuffer(float32Array, 5);
+      var interleavedBuffer = InterleavedBuffer(float32Array, 5);
 
       _geometry.setIndex([0, 1, 2, 0, 2, 3]);
       _geometry.setAttribute('position',
-          new InterleavedBufferAttribute(interleavedBuffer, 3, 0, false));
+          InterleavedBufferAttribute(interleavedBuffer, 3, 0, false));
       _geometry.setAttribute(
-          'uv', new InterleavedBufferAttribute(interleavedBuffer, 2, 3, false));
+          'uv', InterleavedBufferAttribute(interleavedBuffer, 2, 3, false));
     }
 
-    this.geometry = _geometry;
-    this.material = (material != null) ? material : new SpriteMaterial(null);
+    geometry = _geometry;
+    this.material = (material != null) ? material : SpriteMaterial(null);
   }
 
   Sprite.fromJSON(Map<String, dynamic> json, Map<String, dynamic> rootJSON)
@@ -74,20 +74,20 @@ class Sprite extends Object3D {
           'THREE.Sprite: "Raycaster.camera" needs to be set in order to raycast against sprites.');
     }
 
-    _worldScale.setFromMatrixScale(this.matrixWorld);
+    _worldScale.setFromMatrixScale(matrixWorld);
 
     _viewWorldMatrix.copy(raycaster.camera.matrixWorld);
-    this.modelViewMatrix.multiplyMatrices(
-        raycaster.camera.matrixWorldInverse, this.matrixWorld);
+    modelViewMatrix.multiplyMatrices(
+        raycaster.camera.matrixWorldInverse, matrixWorld);
 
-    _mvPosition.setFromMatrixPosition(this.modelViewMatrix);
+    _mvPosition.setFromMatrixPosition(modelViewMatrix);
 
     if (raycaster.camera.type == "PerspectiveCamera" &&
-        this.material.sizeAttenuation == false) {
+        material.sizeAttenuation == false) {
       _worldScale.multiplyScalar(-_mvPosition.z);
     }
 
-    var rotation = this.material.rotation;
+    var rotation = material.rotation;
     var sin, cos;
 
     if (rotation != 0) {
@@ -140,7 +140,7 @@ class Sprite extends Object3D {
           _spriteuvA,
           _spriteuvB,
           _spriteuvC,
-          new Vector2(null, null)),
+          Vector2(null, null)),
       "face": null,
       "object": this
     }));
@@ -151,9 +151,9 @@ class Sprite extends Object3D {
 
     Sprite source1 = source as Sprite;
 
-    if (source1.center != null) this.center.copy(source1.center);
+    if (source1.center != null) center.copy(source1.center);
 
-    this.material = source1.material;
+    material = source1.material;
 
     return this;
   }
