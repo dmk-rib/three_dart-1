@@ -20,7 +20,7 @@ class InstancedBufferAttribute extends BufferAttribute {
   copy(source) {
     super.copy(source);
 
-    this.meshPerAttribute = source.meshPerAttribute;
+    meshPerAttribute = source.meshPerAttribute;
 
     return this;
   }
@@ -28,7 +28,7 @@ class InstancedBufferAttribute extends BufferAttribute {
   toJSON() {
     var data = super.toJSON();
 
-    data.meshPerAttribute = this.meshPerAttribute;
+    data.meshPerAttribute = meshPerAttribute;
 
     data.isInstancedBufferAttribute = true;
 

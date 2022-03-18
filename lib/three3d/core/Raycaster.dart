@@ -9,14 +9,14 @@ class Raycaster {
   late Map<String, dynamic> params;
 
   Raycaster([origin, direction, near, far]) {
-    this.ray = Ray(origin, direction);
+    ray = Ray(origin, direction);
     // direction is assumed to be normalized (for accurate distance calculations)
 
     this.near = near ?? 0;
     this.far = far ?? double.infinity;
-    this.layers = new Layers();
+    layers = Layers();
 
-    this.params = {
+    params = {
       "Mesh": {},
       "Line": {"threshold": 1},
       "LOD": {},
@@ -46,28 +46,26 @@ class Raycaster {
   set(origin, direction) {
     // direction is assumed to be normalized (for accurate distance calculations)
 
-    this.ray.set(origin, direction);
+    ray.set(origin, direction);
   }
 
   setFromCamera(coords, camera) {
     if (camera != null && camera.isPerspectiveCamera) {
-      this.ray.origin.setFromMatrixPosition(camera.matrixWorld);
-      this
-          .ray
+      ray.origin.setFromMatrixPosition(camera.matrixWorld);
+      ray
           .direction
           .set(coords.x, coords.y, 0.5)
           .unproject(camera)
-          .sub(this.ray.origin)
+          .sub(ray.origin)
           .normalize();
       this.camera = camera;
     } else if (camera != null && camera.isOrthographicCamera) {
-      this
-          .ray
+      ray
           .origin
           .set(coords.x, coords.y,
               (camera.near + camera.far) / (camera.near - camera.far))
           .unproject(camera); // set origin in plane of camera
-      this.ray.direction.set(0, 0, -1).transformDirection(camera.matrixWorld);
+      ray.direction.set(0, 0, -1).transformDirection(camera.matrixWorld);
       this.camera = camera;
     } else {
       print('THREE.Raycaster: Unsupported camera type: ' + camera.type);
@@ -159,7 +157,7 @@ class Face {
   late Vector3 normal;
   late num materialIndex;
 
-  Face(this.a, this.b, this.c, this.normal, this.materialIndex) {}
+  Face(this.a, this.b, this.c, this.normal, this.materialIndex);
 
   factory Face.fromJSON(json) {
     return Face(

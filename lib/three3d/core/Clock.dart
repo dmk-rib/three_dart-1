@@ -10,47 +10,47 @@ class Clock {
   Clock([autoStart]) {
     this.autoStart = (autoStart != null) ? autoStart : true;
 
-    this.startTime = 0;
-    this.oldTime = 0;
-    this.elapsedTime = 0;
+    startTime = 0;
+    oldTime = 0;
+    elapsedTime = 0;
 
-    this.running = false;
+    running = false;
   }
 
   start() {
-    this.startTime = now();
+    startTime = now();
 
-    this.oldTime = this.startTime;
-    this.elapsedTime = 0;
-    this.running = true;
+    oldTime = startTime;
+    elapsedTime = 0;
+    running = true;
   }
 
   stop() {
-    this.getElapsedTime();
-    this.running = false;
-    this.autoStart = false;
+    getElapsedTime();
+    running = false;
+    autoStart = false;
   }
 
   getElapsedTime() {
-    this.getDelta();
-    return this.elapsedTime;
+    getDelta();
+    return elapsedTime;
   }
 
   getDelta() {
     num diff = 0;
 
-    if (this.autoStart && !this.running) {
-      this.start();
+    if (autoStart && !running) {
+      start();
       return 0;
     }
 
-    if (this.running) {
+    if (running) {
       var newTime = now();
 
-      diff = (newTime - this.oldTime) / 1000;
-      this.oldTime = newTime;
+      diff = (newTime - oldTime) / 1000;
+      oldTime = newTime;
 
-      this.elapsedTime += diff;
+      elapsedTime += diff;
     }
 
     return diff;

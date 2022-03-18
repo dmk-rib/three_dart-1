@@ -10,11 +10,11 @@ class GLBufferAttribute extends BaseBufferAttribute {
     this.elementSize = elementSize;
     this.count = count;
 
-    this.version = 0;
+    version = 0;
   }
 
   set needsUpdate(bool value) {
-    if (value == true) this.version++;
+    if (value == true) version++;
   }
 
   setBuffer(buffer) {

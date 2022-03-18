@@ -17,7 +17,7 @@ class InstancedInterleavedBuffer extends InterleavedBuffer {
 
     var source1 = source as InstancedInterleavedBuffer;
 
-    this.meshPerAttribute = source1.meshPerAttribute;
+    meshPerAttribute = source1.meshPerAttribute;
 
     return this;
   }
@@ -25,7 +25,7 @@ class InstancedInterleavedBuffer extends InterleavedBuffer {
   clone(data) {
     var ib = super.clone(data);
 
-    ib.meshPerAttribute = this.meshPerAttribute;
+    ib.meshPerAttribute = meshPerAttribute;
 
     return ib;
   }
@@ -34,7 +34,7 @@ class InstancedInterleavedBuffer extends InterleavedBuffer {
     var json = super.toJSON(data);
 
     json["isInstancedInterleavedBuffer"] = true;
-    json["meshPerAttributes"] = this.meshPerAttribute;
+    json["meshPerAttributes"] = meshPerAttribute;
 
     return json;
   }

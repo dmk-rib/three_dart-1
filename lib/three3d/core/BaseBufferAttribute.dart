@@ -28,5 +28,5 @@ class BaseBufferAttribute {
   bool isInstancedBufferAttribute = false;
   bool isFloat16BufferAttribute = false;
 
-  BaseBufferAttribute() {}
+  BaseBufferAttribute();
 }

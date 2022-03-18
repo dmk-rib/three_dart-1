@@ -2,71 +2,71 @@ part of three_core;
 
 class BufferAttribute extends BaseBufferAttribute {
   String type = "BufferAttribute";
-  var _vector = new Vector3.init();
-  var _vector2 = new Vector2(null, null);
+  final _vector = Vector3.init();
+  final _vector2 = Vector2(null, null);
 
   bool isBufferAttribute = true;
 
   BufferAttribute(arrayList, itemSize, [bool normalized = false]) {
     if (arrayList is NativeArray) {
-      this.array = arrayList;
+      array = arrayList;
     } else if (arrayList is Uint8List) {
-      this.array = Uint8Array.from(arrayList);
+      array = Uint8Array.from(arrayList);
     } else if (arrayList is Uint16List) {
-      this.array = Uint16Array.from(arrayList);
+      array = Uint16Array.from(arrayList);
     } else if (arrayList is Uint32List) {
-      this.array = Uint32Array.from(arrayList);
+      array = Uint32Array.from(arrayList);
     } else if (arrayList is Float32List) {
-      this.array = Float32Array.from(arrayList);
+      array = Float32Array.from(arrayList);
     } else if (arrayList is List) {
       // 确认 正确的BufferAttribute 使用了正确的List 类型 默认 Float32
       print(
-          " BufferAttribute type: ${type} ${this} arrayList is ${arrayList.runtimeType} need confirm ? ");
-      this.array = Float32Array.from(arrayList);
+          " BufferAttribute type: $type ${this} arrayList is ${arrayList.runtimeType} need confirm ? ");
+      array = Float32Array.from(arrayList);
     } else {
       throw ("BufferAttribute  arrayList: ${arrayList.runtimeType} is need support ....  ");
     }
 
     this.itemSize = itemSize;
-    this.count = array != null ? (array.length / itemSize).toInt() : 0;
+    count = array != null ? (array.length / itemSize).toInt() : 0;
     this.normalized = normalized == true;
 
-    this.usage = StaticDrawUsage;
-    this.updateRange = {"offset": 0, "count": -1};
+    usage = StaticDrawUsage;
+    updateRange = {"offset": 0, "count": -1};
 
-    this.version = 0;
+    version = 0;
   }
 
-  get length => this.count;
+  get length => count;
 
   set needsUpdate(bool value) {
-    if (value == true) this.version++;
+    if (value == true) version++;
   }
 
   setUsage(value) {
-    this.usage = value;
+    usage = value;
 
     return this;
   }
 
   copy(source) {
-    this.name = source.name;
-    this.array = source.array.clone();
-    this.itemSize = source.itemSize;
-    this.count = source.count;
-    this.normalized = source.normalized;
-    this.type = source.type;
-    this.usage = source.usage;
+    name = source.name;
+    array = source.array.clone();
+    itemSize = source.itemSize;
+    count = source.count;
+    normalized = source.normalized;
+    type = source.type;
+    usage = source.usage;
 
     return this;
   }
 
   copyAt(index1, attribute, index2) {
-    index1 *= this.itemSize;
+    index1 *= itemSize;
     index2 *= attribute.itemSize;
 
-    for (var i = 0, l = this.itemSize; i < l; i++) {
-      this.array[index1 + i] = attribute.array[index2 + i];
+    for (var i = 0, l = itemSize; i < l; i++) {
+      array[index1 + i] = attribute.array[index2 + i];
     }
 
     return this;
@@ -86,8 +86,8 @@ class BufferAttribute extends BaseBufferAttribute {
       var color = colors[i];
 
       if (color == null) {
-        print('THREE.BufferAttribute.copyColorsArray(): color is null ${i}');
-        color = new Color(0, 0, 0);
+        print('THREE.BufferAttribute.copyColorsArray(): color is null $i');
+        color = Color(0, 0, 0);
       }
 
       array[offset++] = color.r;
@@ -106,8 +106,8 @@ class BufferAttribute extends BaseBufferAttribute {
       var vector = vectors[i];
 
       if (vector == null) {
-        print('THREE.BufferAttribute.copyVector2sArray(): vector is null ${i}');
-        vector = new Vector2(null, null);
+        print('THREE.BufferAttribute.copyVector2sArray(): vector is null $i');
+        vector = Vector2(null, null);
       }
 
       array[offset++] = vector.x;
@@ -125,8 +125,8 @@ class BufferAttribute extends BaseBufferAttribute {
       var vector = vectors[i];
 
       if (vector == null) {
-        print('THREE.BufferAttribute.copyVector3sArray(): vector is null ${i}');
-        vector = new Vector3.init();
+        print('THREE.BufferAttribute.copyVector3sArray(): vector is null $i');
+        vector = Vector3.init();
       }
 
       array[offset++] = vector.x;
@@ -145,8 +145,8 @@ class BufferAttribute extends BaseBufferAttribute {
       var vector = vectors[i];
 
       if (vector == null) {
-        print('THREE.BufferAttribute.copyVector4sArray(): vector is null ${i}');
-        vector = new Vector4.init();
+        print('THREE.BufferAttribute.copyVector4sArray(): vector is null $i');
+        vector = Vector4.init();
       }
 
       array[offset++] = vector.x;
@@ -159,19 +159,19 @@ class BufferAttribute extends BaseBufferAttribute {
   }
 
   applyMatrix3(m) {
-    if (this.itemSize == 2) {
-      for (var i = 0, l = this.count; i < l; i++) {
+    if (itemSize == 2) {
+      for (var i = 0, l = count; i < l; i++) {
         _vector2.fromBufferAttribute(this, i);
         _vector2.applyMatrix3(m);
 
-        this.setXY(i, _vector2.x, _vector2.y);
+        setXY(i, _vector2.x, _vector2.y);
       }
-    } else if (this.itemSize == 3) {
-      for (var i = 0, l = this.count; i < l; i++) {
+    } else if (itemSize == 3) {
+      for (var i = 0, l = count; i < l; i++) {
         _vector.fromBufferAttribute(this, i);
         _vector.applyMatrix3(m);
 
-        this.setXYZ(i, _vector.x, _vector.y, _vector.z);
+        setXYZ(i, _vector.x, _vector.y, _vector.z);
       }
     }
 
@@ -179,145 +179,145 @@ class BufferAttribute extends BaseBufferAttribute {
   }
 
   applyMatrix4(Matrix4 m) {
-    for (var i = 0, l = this.count; i < l; i++) {
-      _vector.x = this.getX(i);
-      _vector.y = this.getY(i);
-      _vector.z = this.getZ(i);
+    for (var i = 0, l = count; i < l; i++) {
+      _vector.x = getX(i);
+      _vector.y = getY(i);
+      _vector.z = getZ(i);
 
       _vector.applyMatrix4(m);
 
-      this.setXYZ(i, _vector.x, _vector.y, _vector.z);
+      setXYZ(i, _vector.x, _vector.y, _vector.z);
     }
   }
 
   applyNormalMatrix(m) {
-    for (var i = 0, l = this.count; i < l; i++) {
-      _vector.x = this.getX(i);
-      _vector.y = this.getY(i);
-      _vector.z = this.getZ(i);
+    for (var i = 0, l = count; i < l; i++) {
+      _vector.x = getX(i);
+      _vector.y = getY(i);
+      _vector.z = getZ(i);
 
       _vector.applyNormalMatrix(m);
 
-      this.setXYZ(i, _vector.x, _vector.y, _vector.z);
+      setXYZ(i, _vector.x, _vector.y, _vector.z);
     }
 
     return this;
   }
 
   transformDirection(m) {
-    for (var i = 0, l = this.count; i < l; i++) {
-      _vector.x = this.getX(i);
-      _vector.y = this.getY(i);
-      _vector.z = this.getZ(i);
+    for (var i = 0, l = count; i < l; i++) {
+      _vector.x = getX(i);
+      _vector.y = getY(i);
+      _vector.z = getZ(i);
 
       _vector.transformDirection(m);
 
-      this.setXYZ(i, _vector.x, _vector.y, _vector.z);
+      setXYZ(i, _vector.x, _vector.y, _vector.z);
     }
 
     return this;
   }
 
   set(value, {int offset = 0}) {
-    this.array[offset] = value;
+    array[offset] = value;
 
     return this;
   }
 
   getX(int index) {
-    return getAt(index * this.itemSize);
+    return getAt(index * itemSize);
   }
 
   setX(int index, x) {
-    this.array[index * this.itemSize] = x;
+    array[index * itemSize] = x;
 
     return this;
   }
 
   getY(int index) {
-    return getAt(index * this.itemSize + 1);
+    return getAt(index * itemSize + 1);
   }
 
   setY(int index, y) {
-    this.array[index * this.itemSize + 1] = y;
+    array[index * itemSize + 1] = y;
 
     return this;
   }
 
   getZ(int index) {
-    return getAt(index * this.itemSize + 2);
+    return getAt(index * itemSize + 2);
   }
 
   setZ(int index, z) {
-    this.array[index * this.itemSize + 2] = z;
+    array[index * itemSize + 2] = z;
 
     return this;
   }
 
   getW(int index) {
-    return getAt(index * this.itemSize + 3);
+    return getAt(index * itemSize + 3);
   }
 
   getAt(int index) {
-    if(index < this.array.length) {
-      return this.array[index];
+    if (index < array.length) {
+      return array[index];
     } else {
       return null;
     }
   }
 
   setW(int index, w) {
-    this.array[index * this.itemSize + 3] = w;
+    array[index * itemSize + 3] = w;
 
     return this;
   }
 
   setXY(int index, x, y) {
-    index *= this.itemSize;
+    index *= itemSize;
 
-    this.array[index + 0] = x;
-    this.array[index + 1] = y;
+    array[index + 0] = x;
+    array[index + 1] = y;
 
     return this;
   }
 
   setXYZ(int index, num x, num y, num z) {
-    int _idx = index * this.itemSize;
+    int _idx = index * itemSize;
 
-    this.array[_idx + 0] = x.toDouble();
-    this.array[_idx + 1] = y.toDouble();
-    this.array[_idx + 2] = z.toDouble();
+    array[_idx + 0] = x.toDouble();
+    array[_idx + 1] = y.toDouble();
+    array[_idx + 2] = z.toDouble();
   }
 
   setXYZW(int index, x, y, z, w) {
-    index *= this.itemSize;
+    index *= itemSize;
 
-    this.array[index + 0] = x;
-    this.array[index + 1] = y;
-    this.array[index + 2] = z;
-    this.array[index + 3] = w;
+    array[index + 0] = x;
+    array[index + 1] = y;
+    array[index + 2] = z;
+    array[index + 3] = w;
 
     return this;
   }
 
   onUpload(callback) {
-    this.onUploadCallback = callback;
+    onUploadCallback = callback;
 
     return this;
   }
 
   clone() {
     if (type == "BufferAttribute") {
-      return BufferAttribute(this.array, this.itemSize, false).copy(this);
+      return BufferAttribute(array, itemSize, false).copy(this);
     } else if (type == "Float32BufferAttribute") {
-      return Float32BufferAttribute(this.array, this.itemSize, false)
+      return Float32BufferAttribute(array, itemSize, false)
           .copy(this);
     } else if (type == "Uint8BufferAttribute") {
-      return Uint8BufferAttribute(this.array, this.itemSize, false).copy(this);
+      return Uint8BufferAttribute(array, itemSize, false).copy(this);
     } else if (type == "Uint16BufferAttribute") {
-      return Uint16BufferAttribute(this.array, this.itemSize, false).copy(this);
+      return Uint16BufferAttribute(array, itemSize, false).copy(this);
     } else {
-      throw ("BufferAttribute type: ${type} clone need support ....  ");
+      throw ("BufferAttribute type: $type clone need support ....  ");
     }
   }
 
@@ -332,16 +332,17 @@ class BufferAttribute extends BaseBufferAttribute {
     // };
 
     var data = {
-      "itemSize": this.itemSize,
-      "type": this.array.runtimeType.toString(),
-      "array": this.array.sublist(0),
-      "normalized": this.normalized
+      "itemSize": itemSize,
+      "type": array.runtimeType.toString(),
+      "array": array.sublist(0),
+      "normalized": normalized
     };
 
-    if (this.name != null) data["name"] = this.name;
-    if (this.usage != StaticDrawUsage) data["usage"] = this.usage;
-    if (this.updateRange?["offset"] != 0 || this.updateRange?["count"] != -1)
-      data["updateRange"] = this.updateRange;
+    if (name != null) data["name"] = name;
+    if (usage != StaticDrawUsage) data["usage"] = usage;
+    if (updateRange?["offset"] != 0 || updateRange?["count"] != -1) {
+      data["updateRange"] = updateRange;
+    }
 
     return data;
   }

@@ -10,7 +10,7 @@ class InstancedBufferGeometry extends BufferGeometry {
   copy(source) {
     super.copy(source);
 
-    this.instanceCount = source.instanceCount;
+    instanceCount = source.instanceCount;
 
     return this;
   }
@@ -22,7 +22,7 @@ class InstancedBufferGeometry extends BufferGeometry {
   toJSON({Object3dMeta? meta}) {
     var data = super.toJSON(meta: meta);
 
-    data.instanceCount = this.instanceCount;
+    data.instanceCount = instanceCount;
 
     data.isInstancedBufferGeometry = true;
 

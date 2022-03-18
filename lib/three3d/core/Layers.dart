@@ -6,34 +6,34 @@ class Layers {
   Layers() {}
 
   set(channel) {
-    this.mask = (1 << channel | 0) >> 0;
+    mask = (1 << channel | 0) >> 0;
   }
 
   enable(channel) {
-    this.mask = this.mask | (1 << channel | 0);
+    mask = mask | (1 << channel | 0);
   }
 
   enableAll() {
-    this.mask = 0xffffffff | 0;
+    mask = 0xffffffff | 0;
   }
 
   toggle(channel) {
-    this.mask ^= 1 << channel | 0;
+    mask ^= 1 << channel | 0;
   }
 
   disable(channel) {
-    this.mask &= ~(1 << channel | 0);
+    mask &= ~(1 << channel | 0);
   }
 
   disableAll() {
-    this.mask = 0;
+    mask = 0;
   }
 
   bool test(layers) {
-    return (this.mask & layers.mask) != 0;
+    return (mask & layers.mask) != 0;
   }
 
   isEnabled(channel) {
-    return (this.mask & (1 << channel | 0)) != 0;
+    return (mask & (1 << channel | 0)) != 0;
   }
 }
