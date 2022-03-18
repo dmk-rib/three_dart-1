@@ -130,7 +130,7 @@ class Object3D with EventDispatcher {
     scale = Vector3.fromJSON(json["scale"]);
 
     if (json["geometry"] != null) {
-      List<BufferGeometry> geometries = rootJSON["geometries"];
+      List<BufferGeometry>? geometries = rootJSON["geometries"];
 
       if (geometries != null) {
         BufferGeometry _geometry = geometries
@@ -140,7 +140,7 @@ class Object3D with EventDispatcher {
     }
 
     if (json["material"] != null) {
-      List<Material> materials = rootJSON["materials"];
+      List<Material>? materials = rootJSON["materials"];
 
       if (materials != null) {
         Material _material =
@@ -153,9 +153,9 @@ class Object3D with EventDispatcher {
 
     if (json["children"] != null) {
       List<Map<String, dynamic>> _children = json["children"];
-      _children.forEach((_child) {
+      for (var _child in _children) {
         children.add(Object3D.castJSON(_child, rootJSON));
-      });
+      }
     }
   }
 
@@ -166,14 +166,14 @@ class Object3D with EventDispatcher {
   }
 
   static castJSON(Map<String, dynamic> json, Map<String, dynamic> rootJSON) {
-    String _type = json["type"];
+    String? _type = json["type"];
 
     if (_type == null) {
-      Map<String, dynamic> _object = json["object"];
+      Map<String, dynamic>? _object = json["object"];
       if (_object != null) {
         _type = _object["type"];
         json = _object;
-        print(" object is not null use object as json type: ${_type} ");
+        print(" object is not null use object as json type: $_type ");
       }
     }
 
@@ -202,7 +202,7 @@ class Object3D with EventDispatcher {
     } else if (_type == "ShapeGeometry") {
       return ShapeGeometry.fromJSON(json, rootJSON);
     } else {
-      throw " type: ${_type} Object3D.castJSON is not support yet... ";
+      throw " type: $_type Object3D.castJSON is not support yet... ";
     }
   }
 
@@ -351,10 +351,10 @@ class Object3D with EventDispatcher {
     return this;
   }
 
-  add(Object3D object) {
+  add(Object3D? object) {
     if (object == this) {
       print(
-          'THREE.Object3D.add: object can\'t be added as a child of itself. ${object}');
+          'THREE.Object3D.add: object can\'t be added as a child of itself. $object');
       return this;
     }
 
@@ -369,7 +369,7 @@ class Object3D with EventDispatcher {
       object.dispatchEvent(_addedEvent);
     } else {
       print(
-          'THREE.Object3D.add: object not an instance of THREE.Object3D. ${object}');
+          'THREE.Object3D.add: object not an instance of THREE.Object3D. $object');
     }
 
     return this;
@@ -465,7 +465,7 @@ class Object3D with EventDispatcher {
     return null;
   }
 
-  getWorldPosition(Vector3 target) {
+  getWorldPosition(Vector3? target) {
     if (target == null) {
       print('THREE.Object3D: .getWorldPosition() target is now required');
       target = Vector3.init();
@@ -595,7 +595,7 @@ class Object3D with EventDispatcher {
     // meta is a string when called from JSON.stringify
     var isRootObject = (meta == null || meta is String);
 
-    Map<String, dynamic> output = Map<String, dynamic>();
+    Map<String, dynamic> output = <String, dynamic>{};
 
     // meta is a hash used to collect geometries, materials.
     // not providing it implies that this is the root object
@@ -613,7 +613,7 @@ class Object3D with EventDispatcher {
 
     // standard Object3D serialization
 
-    Map<String, dynamic> object = Map<String, dynamic>();
+    Map<String, dynamic> object = <String, dynamic>{};
 
     object["uuid"] = uuid;
     object["type"] = type;
@@ -624,7 +624,7 @@ class Object3D with EventDispatcher {
     if (visible == false) object["visible"] = false;
     if (frustumCulled == false) object["frustumCulled"] = false;
     if (renderOrder != 0) object["renderOrder"] = renderOrder;
-    if (userData.keys.length > 0) object["userData"] = userData;
+    if (userData.isNotEmpty) object["userData"] = userData;
 
     object["layers"] = layers.mask;
     object["matrix"] = matrix.toArray(List<num>.filled(16, 0.0));
@@ -640,8 +640,9 @@ class Object3D with EventDispatcher {
       object["count"] = _instanceMesh.count;
       object["instanceMatrix"] = _instanceMesh.instanceMatrix.toJSON();
 
-      if (_instanceMesh.instanceColor != null)
+      if (_instanceMesh.instanceColor != null) {
         object["instanceColor"] = _instanceMesh.instanceColor!.toJSON();
+      }
     }
 
     if (isScene) {
@@ -708,7 +709,7 @@ class Object3D with EventDispatcher {
       }
     }
 
-    if (children.length > 0) {
+    if (children.isNotEmpty) {
       List<Map<String, dynamic>> _childrenJSON = [];
 
       for (var i = 0; i < children.length; i++) {
@@ -746,15 +747,15 @@ class Object3D with EventDispatcher {
       var animations = extractFromCache(meta.animations);
 
       print(textures);
-      print(" isRootObject: ${isRootObject} ");
+      print(" isRootObject: $isRootObject ");
 
-      if (geometries.length > 0) output["geometries"] = geometries;
-      if (materials.length > 0) output["materials"] = materials;
-      if (textures.length > 0) output["textures"] = textures;
-      if (images.length > 0) output["images"] = images;
-      if (shapes.length > 0) output["shapes"] = shapes;
-      if (skeletons.length > 0) output["skeletons"] = skeletons;
-      if (animations.length > 0) output["animations"] = animations;
+      if (geometries.isNotEmpty) output["geometries"] = geometries;
+      if (materials.isNotEmpty) output["materials"] = materials;
+      if (textures.isNotEmpty) output["textures"] = textures;
+      if (images.isNotEmpty) output["images"] = images;
+      if (shapes.isNotEmpty) output["shapes"] = shapes;
+      if (skeletons.isNotEmpty) output["skeletons"] = skeletons;
+      if (animations.isNotEmpty) output["animations"] = animations;
     }
 
     output["object"] = object;
@@ -843,7 +844,7 @@ class Object3D with EventDispatcher {
     if (name == "bindMatrix") {
       return bindMatrix;
     } else {
-      throw ("Object3D.getValue type: ${type} name: ${name} is not support .... ");
+      throw ("Object3D.getValue type: $type name: $name is not support .... ");
     }
   }
 
@@ -872,7 +873,7 @@ class Object3D with EventDispatcher {
     } else if (propertyName == "visible") {
       return visible;
     } else {
-      throw ("Object3D.getProperty type: ${type} propertyName: ${propertyName} is not support ");
+      throw ("Object3D.getProperty type: $type propertyName: $propertyName is not support ");
     }
   }
 
@@ -890,7 +891,7 @@ class Object3D with EventDispatcher {
     } else if (propertyName == "quaternion") {
       quaternion.copy(value);
     } else {
-      throw ("Object3D.setProperty type: ${type} propertyName: ${propertyName} is not support ");
+      throw ("Object3D.setProperty type: $type propertyName: $propertyName is not support ");
     }
 
     return this;
@@ -900,11 +901,11 @@ class Object3D with EventDispatcher {
 }
 
 class Object3dMeta {
-  Map<String, dynamic> geometries = Map<String, dynamic>();
-  Map<String, dynamic> materials = Map<String, dynamic>();
-  Map<String, dynamic> textures = Map<String, dynamic>();
-  Map<String, dynamic> images = Map<String, dynamic>();
-  Map<String, dynamic> shapes = Map<String, dynamic>();
-  Map<String, dynamic> skeletons = Map<String, dynamic>();
-  Map<String, dynamic> animations = Map<String, dynamic>();
+  Map<String, dynamic> geometries = <String, dynamic>{};
+  Map<String, dynamic> materials = <String, dynamic>{};
+  Map<String, dynamic> textures = <String, dynamic>{};
+  Map<String, dynamic> images = <String, dynamic>{};
+  Map<String, dynamic> shapes = <String, dynamic>{};
+  Map<String, dynamic> skeletons = <String, dynamic>{};
+  Map<String, dynamic> animations = <String, dynamic>{};
 }

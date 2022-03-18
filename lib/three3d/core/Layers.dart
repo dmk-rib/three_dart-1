@@ -3,7 +3,7 @@ part of three_core;
 class Layers {
   int mask = 1 | 0;
 
-  Layers() {}
+  Layers();
 
   set(channel) {
     mask = (1 << channel | 0) >> 0;

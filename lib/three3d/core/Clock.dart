@@ -7,7 +7,7 @@ class Clock {
   late num elapsedTime;
   late bool running;
 
-  Clock([autoStart]) {
+  Clock([bool? autoStart]) {
     this.autoStart = (autoStart != null) ? autoStart : true;
 
     startTime = 0;
@@ -17,7 +17,7 @@ class Clock {
     running = false;
   }
 
-  start() {
+  void start() {
     startTime = now();
 
     oldTime = startTime;
@@ -25,18 +25,18 @@ class Clock {
     running = true;
   }
 
-  stop() {
+  void stop() {
     getElapsedTime();
     running = false;
     autoStart = false;
   }
 
-  getElapsedTime() {
+  num getElapsedTime() {
     getDelta();
     return elapsedTime;
   }
 
-  getDelta() {
+  num getDelta() {
     num diff = 0;
 
     if (autoStart && !running) {
@@ -57,6 +57,6 @@ class Clock {
   }
 }
 
-now() {
+int now() {
   return DateTime.now().millisecondsSinceEpoch; // see #10732
 }
