@@ -11,12 +11,21 @@ class InstancedMesh extends Mesh {
   late InstancedBufferAttribute instanceMatrix;
   late BufferAttribute? instanceColor;
 
-  String type = "InstancedMesh";
+  String _type = "InstancedMesh";
+  bool _isInstancedMesh = true;
 
-  bool isInstancedMesh = true;
+  @override
+  String get type => _type;
+  @override
+  set type(String type) => _type = type;
+
+  @override
+  bool get isInstancedMesh => _isInstancedMesh;
+  @override
+  set isInstancedMesh(bool isInstanced) => _isInstancedMesh = isInstanced;
 
   InstancedMesh(geometry, material, count) : super(geometry, material) {
-    var dl = Float32Array(count * 16);
+    var dl = Float32List(count * 16);
     instanceMatrix = InstancedBufferAttribute(dl, 16, false);
     instanceColor = null;
 
@@ -25,15 +34,17 @@ class InstancedMesh extends Mesh {
     frustumCulled = false;
   }
 
-  copy(Object3D source, [bool? recursive]) {
+  @override
+  InstancedMesh copy(Object3D source, [bool? recursive]) {
     super.copy(source);
 
     InstancedMesh source1 = source as InstancedMesh;
 
     instanceMatrix.copy(source1.instanceMatrix);
 
-    if (source.instanceColor != null)
+    if (source.instanceColor != null) {
       instanceColor = source.instanceColor!.clone();
+    }
 
     count = source1.count;
 
@@ -48,7 +59,8 @@ class InstancedMesh extends Mesh {
     matrix.fromArray(instanceMatrix.array, index * 16);
   }
 
-  raycast(raycaster, intersects) {
+  @override
+  void raycast(raycaster, intersects) {
     var matrixWorld = this.matrixWorld;
     var raycastTimes = count;
 
@@ -85,7 +97,7 @@ class InstancedMesh extends Mesh {
 
   setColorAt(index, color) {
     instanceColor ??= BufferAttribute(
-        Float32Array((instanceMatrix.count * 3).toInt()), 3, false);
+        Float32List((instanceMatrix.count * 3).toInt()), 3, false);
 
     color.toArray(instanceColor!.array, index * 3);
   }
@@ -94,8 +106,10 @@ class InstancedMesh extends Mesh {
     matrix.toArray(instanceMatrix.array, index * 16);
   }
 
+  @override
   updateMorphTargets() {}
 
+  @override
   dispose() {
     dispatchEvent(Event({"type": "dispose"}));
   }

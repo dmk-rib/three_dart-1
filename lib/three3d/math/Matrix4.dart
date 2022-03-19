@@ -10,10 +10,10 @@ var _matrix4z = Vector3.init();
 
 class Matrix4 {
   String type = "Matrix4";
-  late Float32Array elements;
+  late Float32List elements;
 
   Matrix4() {
-    elements = Float32Array.from([
+    elements = Float32List.fromList([
       1.0,
       0.0,
       0.0,
@@ -496,9 +496,9 @@ class Matrix4 {
   Matrix4 setPositionFromVector3(Vector3 x) {
     var te = elements;
 
-    te[12] = x.x;
-    te[13] = x.y;
-    te[14] = x.z;
+    te[12] = x.x.toDouble();
+    te[13] = x.y.toDouble();
+    te[14] = x.z.toDouble();
 
     return this;
   }

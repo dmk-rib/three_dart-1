@@ -88,10 +88,11 @@ class BufferGeometry with EventDispatcher {
     // }
 
     if (index is List) {
+      final list = index.map<int>((e) => e.toInt()).toList();
       if (arrayMax(index) > 65535) {
-        this.index = Uint32BufferAttribute(Uint32Array.from(index), 1, false);
+        this.index = Uint32BufferAttribute(Uint32List.fromList(list), 1, false);
       } else {
-        this.index = Uint16BufferAttribute(Uint16Array.from(index), 1, false);
+        this.index = Uint16BufferAttribute(Uint16List.fromList(list), 1, false);
       }
     } else {
       this.index = index;
@@ -248,7 +249,7 @@ class BufferGeometry with EventDispatcher {
   }
 
   setFromPoints(points) {
-    List<num> position = [];
+    List<double> position = [];
 
     for (var i = 0, l = points.length; i < l; i++) {
       var point = points[i];
@@ -260,7 +261,8 @@ class BufferGeometry with EventDispatcher {
       }
     }
 
-    setAttribute('position', Float32BufferAttribute(position, 3, false));
+    final array = Float32List.fromList(position);
+    setAttribute('position', Float32BufferAttribute(array, 3, false));
 
     return this;
   }
@@ -434,7 +436,7 @@ class BufferGeometry with EventDispatcher {
     int nVertices = positions.length ~/ 3;
 
     if (attributes["tangent"] == undefined) {
-      setAttribute('tangent', BufferAttribute(Float32Array(4 * nVertices), 4));
+      setAttribute('tangent', BufferAttribute(Float32List(4 * nVertices), 4));
     }
 
     var tangents = attributes["tangent"].array;
@@ -563,8 +565,9 @@ class BufferGeometry with EventDispatcher {
       var normalAttribute = getAttribute('normal');
 
       if (normalAttribute == null) {
-        normalAttribute = Float32BufferAttribute(
-            List<num>.filled(positionAttribute.count * 3, 0), 3, false);
+        final array = List<double>.filled(positionAttribute.count * 3, 0);
+        normalAttribute =
+            Float32BufferAttribute(Float32List.fromList(array), 3, false);
         setAttribute('normal', normalAttribute);
       } else {
         // reset existing normals to zero
@@ -688,7 +691,7 @@ class BufferGeometry with EventDispatcher {
       var itemSize = attribute.itemSize;
       var normalized = attribute.normalized;
 
-      var array2 = Float32Array(indices.length * itemSize);
+      var array2 = Float32List(indices.length * itemSize);
 
       var index = 0, index2 = 0;
 

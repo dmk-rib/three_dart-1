@@ -10,7 +10,7 @@ class PlaneHelper extends Line {
   factory PlaneHelper(plane, [size = 1, hex = 0xffff00]) {
     var color = hex;
 
-    var positions = [
+    List<double> positions = [
       1,
       -1,
       1,
@@ -45,7 +45,8 @@ class PlaneHelper extends Line {
 
     var geometry = BufferGeometry();
     geometry.setAttribute(
-        'position', Float32BufferAttribute(positions, 3, false));
+        'position',
+        Float32BufferAttribute(Float32List.fromList(positions), 3, false));
     geometry.computeBoundingSphere();
 
     var planeHelper = PlaneHelper.create(
@@ -55,7 +56,7 @@ class PlaneHelper extends Line {
 
     planeHelper.size = size;
 
-    var positions2 = [
+    List<double> positions2 = [
       1,
       1,
       1,
@@ -78,7 +79,8 @@ class PlaneHelper extends Line {
 
     var geometry2 = BufferGeometry();
     geometry2.setAttribute(
-        'position', Float32BufferAttribute(positions2, 3, false));
+        'position',
+        Float32BufferAttribute(Float32List.fromList(positions2), 3, false));
     geometry2.computeBoundingSphere();
 
     planeHelper.add(Mesh(

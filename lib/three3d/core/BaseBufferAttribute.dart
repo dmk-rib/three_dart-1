@@ -1,7 +1,7 @@
 part of three_core;
 
-class BaseBufferAttribute {
-  dynamic array;
+abstract class BaseBufferAttribute {
+  late dynamic array;
   late int itemSize;
 
   InterleavedBuffer? data;
