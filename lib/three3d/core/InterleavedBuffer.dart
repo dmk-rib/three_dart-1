@@ -31,13 +31,13 @@ class InterleavedBuffer {
     }
   }
 
-  setUsage(value) {
+  InterleavedBuffer setUsage(int value) {
     usage = value;
 
     return this;
   }
 
-  copy(InterleavedBuffer source) {
+  InterleavedBuffer copy(InterleavedBuffer source) {
     array = source.array.clone();
     count = source.count;
     stride = source.stride;
@@ -46,7 +46,8 @@ class InterleavedBuffer {
     return this;
   }
 
-  copyAt(index1, attribute, index2) {
+  InterleavedBuffer copyAt(
+      int index1, InterleavedBuffer attribute, int index2) {
     index1 *= stride;
     index2 *= attribute.stride;
 
@@ -90,13 +91,13 @@ class InterleavedBuffer {
     // return ib;
   }
 
-  onUpload(callback) {
+  InterleavedBuffer onUpload(Function callback) {
     onUploadCallback = callback;
 
     return this;
   }
 
-  toJSON(data) {
+  Map<String, dynamic> toJSON(data) {
     data.arrayBuffers ??= {};
 
     // generate UUID for array buffer if necessary

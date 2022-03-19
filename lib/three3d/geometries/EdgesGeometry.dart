@@ -29,9 +29,9 @@ class EdgesGeometry extends BufferGeometry {
     List<double> vertices = [];
     for (var i = 0; i < indexCount; i += 3) {
       if (indexAttr != null) {
-        indexArr[0] = indexAttr.getX(i);
-        indexArr[1] = indexAttr.getX(i + 1);
-        indexArr[2] = indexAttr.getX(i + 2);
+        indexArr[0] = indexAttr.getX(i)!.toInt();
+        indexArr[1] = indexAttr.getX(i + 1)!.toInt();
+        indexArr[2] = indexAttr.getX(i + 2)!.toInt();
       } else {
         indexArr[0] = i;
         indexArr[1] = i + 1;
@@ -68,8 +68,8 @@ class EdgesGeometry extends BufferGeometry {
         var v0 = _triangle[vertKeys[j]];
         var v1 = _triangle[vertKeys[jNext]];
 
-        var hash = "${vecHash0}_${vecHash1}";
-        var reverseHash = "${vecHash1}_${vecHash0}";
+        var hash = "${vecHash0}_$vecHash1";
+        var reverseHash = "${vecHash1}_$vecHash0";
 
         if (edgeData.containsKey(reverseHash) &&
             edgeData[reverseHash] != null) {

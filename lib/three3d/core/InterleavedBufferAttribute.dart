@@ -1,32 +1,35 @@
 part of three_core;
 
-var _vector = new Vector3.init();
+var _vector = Vector3.init();
 
 class InterleavedBufferAttribute extends BaseBufferAttribute {
-  InterleavedBuffer? data;
-  int itemSize;
   int offset;
-  bool normalized;
-  bool isInterleavedBufferAttribute = true;
-  String type = "InterleavedBufferAttribute";
 
   InterleavedBufferAttribute(
-      this.data, this.itemSize, this.offset, this.normalized)
-      : super();
+      InterleavedBuffer? _data, int _itemSize, this.offset, bool _normalized)
+      : super() {
+    type = "InterleavedBufferAttribute";
+    isInterleavedBufferAttribute = true;
+    data = _data;
+    itemSize = _itemSize;
+    normalized = _normalized;
+  }
 
-  get count {
+  @override
+  int get count {
     return data!.count;
   }
 
+  @override
   get array {
     return data!.array;
   }
 
-  set needsUpdate(value) {
+  set needsUpdate(bool value) {
     data!.needsUpdate = value;
   }
 
-  applyMatrix4(m) {
+  InterleavedBufferAttribute applyMatrix4(Matrix4 m) {
     for (var i = 0, l = data!.count; i < l; i++) {
       _vector.x = getX(i);
       _vector.y = getY(i);
@@ -40,7 +43,7 @@ class InterleavedBufferAttribute extends BaseBufferAttribute {
     return this;
   }
 
-  applyNormalMatrix(m) {
+  InterleavedBufferAttribute applyNormalMatrix(Matrix3 m) {
     for (var i = 0, l = count; i < l; i++) {
       _vector.x = getX(i);
       _vector.y = getY(i);
@@ -54,7 +57,7 @@ class InterleavedBufferAttribute extends BaseBufferAttribute {
     return this;
   }
 
-  transformDirection(m) {
+  InterleavedBufferAttribute transformDirection(Matrix4 m) {
     for (var i = 0, l = count; i < l; i++) {
       _vector.x = getX(i);
       _vector.y = getY(i);
@@ -68,47 +71,47 @@ class InterleavedBufferAttribute extends BaseBufferAttribute {
     return this;
   }
 
-  setX(index, x) {
+  InterleavedBufferAttribute setX(int index, x) {
     data!.array[index * data!.stride + offset] = x;
 
     return this;
   }
 
-  setY(index, y) {
+  InterleavedBufferAttribute setY(int index, y) {
     data!.array[index * data!.stride + offset + 1] = y;
 
     return this;
   }
 
-  setZ(index, z) {
+  InterleavedBufferAttribute setZ(int index, z) {
     data!.array[index * data!.stride + offset + 2] = z;
 
     return this;
   }
 
-  setW(index, w) {
+  InterleavedBufferAttribute setW(int index, w) {
     data!.array[index * data!.stride + offset + 3] = w;
 
     return this;
   }
 
-  getX(index) {
+  getX(int index) {
     return data!.array[index * data!.stride + offset];
   }
 
-  getY(index) {
+  getY(int index) {
     return data!.array[index * data!.stride + offset + 1];
   }
 
-  getZ(index) {
+  getZ(int index) {
     return data!.array[index * data!.stride + offset + 2];
   }
 
-  getW(index) {
+  getW(int index) {
     return data!.array[index * data!.stride + offset + 3];
   }
 
-  setXY(index, x, y) {
+  InterleavedBufferAttribute setXY(int index, x, y) {
     index = index * data!.stride + offset;
 
     data!.array[index + 0] = x;
@@ -117,7 +120,7 @@ class InterleavedBufferAttribute extends BaseBufferAttribute {
     return this;
   }
 
-  setXYZ(index, x, y, z) {
+  InterleavedBufferAttribute setXYZ(int index, x, y, z) {
     index = index * data!.stride + offset;
 
     data!.array[index + 0] = x;
@@ -127,7 +130,7 @@ class InterleavedBufferAttribute extends BaseBufferAttribute {
     return this;
   }
 
-  setXYZW(index, x, y, z, w) {
+  InterleavedBufferAttribute setXYZW(int index, x, y, z, w) {
     index = index * data!.stride + offset;
 
     data!.array[index + 0] = x;
@@ -180,7 +183,7 @@ class InterleavedBufferAttribute extends BaseBufferAttribute {
 
   // }
 
-  toJSON(data) {
+  Map<String, Object> toJSON(data) {
     if (data == null) {
       print(
           'THREE.InterleavedBufferAttribute.toJSON(): Serializing an interlaved buffer attribute will deinterleave buffer data!.');

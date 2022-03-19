@@ -4,24 +4,23 @@ class InstancedInterleavedBuffer extends InterleavedBuffer {
   late int meshPerAttribute;
 
   bool isInstancedInterleavedBuffer = true;
-
-  String type = "InstancedInterleavedBuffer";
-
+  
   InstancedInterleavedBuffer(array, stride, meshPerAttribute)
       : super(array, stride) {
     this.meshPerAttribute = meshPerAttribute ?? 1;
+    type = "InstancedInterleavedBuffer";
   }
 
-  copy(source) {
+  @override
+  InstancedInterleavedBuffer copy(InterleavedBuffer source) {
     super.copy(source);
-
-    var source1 = source as InstancedInterleavedBuffer;
-
-    meshPerAttribute = source1.meshPerAttribute;
-
+    if (source is InstancedInterleavedBuffer) {
+      meshPerAttribute = source.meshPerAttribute;
+    }
     return this;
   }
 
+  @override
   clone(data) {
     var ib = super.clone(data);
 
@@ -30,6 +29,7 @@ class InstancedInterleavedBuffer extends InterleavedBuffer {
     return ib;
   }
 
+  @override
   toJSON(data) {
     var json = super.toJSON(data);
 
