@@ -133,7 +133,7 @@ class Box3 {
     return this;
   }
 
-  Box3 setFromObject(object, [bool precise = false]) {
+  Box3 setFromObject(Object3D object, [bool precise = false]) {
     makeEmpty();
 
     return expandByObject(object, precise);
@@ -395,7 +395,7 @@ class Box3 {
     return target.copy(point).clamp(min, max);
   }
 
-  double distanceToPoint(point) {
+  double distanceToPoint(Vector3 point) {
     var clampedPoint = _vectorBox3.copy(point).clamp(min, max);
 
     return clampedPoint.sub(point).length();

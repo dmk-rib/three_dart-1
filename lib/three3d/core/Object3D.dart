@@ -76,8 +76,8 @@ class Object3D with EventDispatcher {
 
   Vector3 up = Object3D.DefaultUp.clone();
 
-  Vector3 position = Vector3(0,0,0);
-  Euler rotation = Euler(0,0,0);
+  Vector3 position = Vector3(0, 0, 0);
+  Euler rotation = Euler(0, 0, 0);
   Quaternion quaternion = Quaternion();
   Vector3 scale = Vector3(1, 1, 1);
   Matrix4 modelViewMatrix = Matrix4();
@@ -154,18 +154,20 @@ class Object3D with EventDispatcher {
     if (json["children"] != null) {
       List<Map<String, dynamic>> _children = json["children"];
       for (var _child in _children) {
-        children.add(Object3D.castJSON(_child, rootJSON));
+        final obj = Object3D.castJSON(_child, rootJSON);
+        if (obj is Object3D) children.add(obj);
       }
     }
   }
 
-  init() {
+  void init() {
     // TODO
     rotation.onChange(onRotationChange);
     quaternion.onChange(onQuaternionChange);
   }
 
-  static castJSON(Map<String, dynamic> json, Map<String, dynamic> rootJSON) {
+  static EventDispatcher castJSON(
+      Map<String, dynamic> json, Map<String, dynamic> rootJSON) {
     String? _type = json["type"];
 
     if (_type == null) {
@@ -206,15 +208,15 @@ class Object3D with EventDispatcher {
     }
   }
 
-  onRotationChange() {
+  void onRotationChange() {
     quaternion.setFromEuler(rotation, false);
   }
 
-  onQuaternionChange() {
+  void onQuaternionChange() {
     rotation.setFromQuaternion(quaternion, null, false);
   }
 
-  applyMatrix4(matrix) {
+  void applyMatrix4(Matrix4 matrix) {
     if (matrixAutoUpdate) updateMatrix();
 
     this.matrix.premultiply(matrix);
@@ -222,35 +224,35 @@ class Object3D with EventDispatcher {
     this.matrix.decompose(position, quaternion, scale);
   }
 
-  applyQuaternion(q) {
+  Object3D applyQuaternion(Quaternion q) {
     quaternion.premultiply(q);
 
     return this;
   }
 
-  setRotationFromAxisAngle(axis, angle) {
+  void setRotationFromAxisAngle(axis, num angle) {
     // assumes axis is normalized
 
     quaternion.setFromAxisAngle(axis, angle);
   }
 
-  setRotationFromEuler(euler) {
+  void setRotationFromEuler(Euler euler) {
     quaternion.setFromEuler(euler, true);
   }
 
-  setRotationFromMatrix(m) {
+  void setRotationFromMatrix(m) {
     // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
 
     quaternion.setFromRotationMatrix(m);
   }
 
-  setRotationFromQuaternion(q) {
+  void setRotationFromQuaternion(Quaternion q) {
     // assumes q is normalized
 
     quaternion.copy(q);
   }
 
-  rotateOnAxis(axis, angle) {
+  Object3D rotateOnAxis(axis, num angle) {
     // rotate object on axis in object space
     // axis is assumed to be normalized
 
@@ -261,7 +263,7 @@ class Object3D with EventDispatcher {
     return this;
   }
 
-  rotateOnWorldAxis(axis, angle) {
+  Object3D rotateOnWorldAxis(axis, num angle) {
     // rotate object on axis in world space
     // axis is assumed to be normalized
     // method assumes no rotated parent
@@ -273,19 +275,19 @@ class Object3D with EventDispatcher {
     return this;
   }
 
-  rotateX(angle) {
+  Object3D rotateX(num angle) {
     return rotateOnAxis(_xAxis, angle);
   }
 
-  rotateY(angle) {
+  Object3D rotateY(num angle) {
     return rotateOnAxis(_yAxis, angle);
   }
 
-  rotateZ(angle) {
+  Object3D rotateZ(num angle) {
     return rotateOnAxis(_zAxis, angle);
   }
 
-  translateOnAxis(axis, distance) {
+  Object3D translateOnAxis(axis, num distance) {
     // translate object by distance along axis in object space
     // axis is assumed to be normalized
 
@@ -296,15 +298,15 @@ class Object3D with EventDispatcher {
     return this;
   }
 
-  translateX(distance) {
+  Object3D translateX(distance) {
     return translateOnAxis(_xAxis, distance);
   }
 
-  translateY(distance) {
+  Object3D translateY(distance) {
     return translateOnAxis(_yAxis, distance);
   }
 
-  translateZ(distance) {
+  Object3D translateZ(distance) {
     return translateOnAxis(_zAxis, distance);
   }
 
@@ -316,7 +318,7 @@ class Object3D with EventDispatcher {
     return vector.applyMatrix4(_m1.copy(matrixWorld).invert());
   }
 
-  lookAt(Vector3 position) {
+  void lookAt(Vector3 position) {
     // This method does not support objects having non-uniformly-scaled parent(s)
 
     _target.copy(position);
@@ -343,7 +345,7 @@ class Object3D with EventDispatcher {
     }
   }
 
-  addAll(List<Object3D> objects) {
+  Object3D addAll(List<Object3D> objects) {
     for (var i = 0; i < objects.length; i++) {
       add(objects[i]);
     }
@@ -351,7 +353,7 @@ class Object3D with EventDispatcher {
     return this;
   }
 
-  add(Object3D? object) {
+  Object3D add(Object3D? object) {
     if (object == this) {
       print(
           'THREE.Object3D.add: object can\'t be added as a child of itself. $object');
@@ -375,7 +377,7 @@ class Object3D with EventDispatcher {
     return this;
   }
 
-  removeList(List<Object3D> objects) {
+  Object3D removeList(List<Object3D> objects) {
     for (var i = 0; i < objects.length; i++) {
       remove(objects[i]);
     }
@@ -383,7 +385,7 @@ class Object3D with EventDispatcher {
     return this;
   }
 
-  remove(Object3D object) {
+  Object3D remove(Object3D object) {
     var index = children.indexOf(object);
 
     if (index != -1) {
@@ -396,7 +398,7 @@ class Object3D with EventDispatcher {
     return this;
   }
 
-  removeFromParent() {
+  Object3D removeFromParent() {
     var parent = this.parent;
 
     if (parent != null) {
@@ -406,7 +408,7 @@ class Object3D with EventDispatcher {
     return this;
   }
 
-  clear() {
+  Object3D clear() {
     for (var i = 0; i < children.length; i++) {
       var object = children[i];
 
@@ -420,7 +422,7 @@ class Object3D with EventDispatcher {
     return this;
   }
 
-  attach(Object3D object) {
+  Object3D attach(Object3D object) {
     // adds object as a child of this, while maintaining the object's world transform
 
     updateWorldMatrix(true, false);
@@ -441,16 +443,16 @@ class Object3D with EventDispatcher {
     return this;
   }
 
-  getObjectById(id) {
+  Object3D? getObjectById(String id) {
     return getObjectByProperty('id', id);
   }
 
-  getObjectByName(name) {
+  Object3D? getObjectByName(String name) {
     return getObjectByProperty('name', name);
   }
 
   // TODO
-  getObjectByProperty(String name, String value) {
+  Object3D? getObjectByProperty(String name, String value) {
     if (getProperty(name) == value) return this;
 
     for (var i = 0, l = children.length; i < l; i++) {
@@ -465,7 +467,7 @@ class Object3D with EventDispatcher {
     return null;
   }
 
-  getWorldPosition(Vector3? target) {
+  Vector3 getWorldPosition(Vector3? target) {
     if (target == null) {
       print('THREE.Object3D: .getWorldPosition() target is now required');
       target = Vector3.init();
@@ -476,7 +478,7 @@ class Object3D with EventDispatcher {
     return target.setFromMatrixPosition(matrixWorld);
   }
 
-  getWorldQuaternion(Quaternion target) {
+  Quaternion getWorldQuaternion(Quaternion target) {
     updateWorldMatrix(true, false);
 
     matrixWorld.decompose(_position, target, _scale);
@@ -484,7 +486,7 @@ class Object3D with EventDispatcher {
     return target;
   }
 
-  getWorldScale(Vector3 target) {
+  Vector3 getWorldScale(Vector3 target) {
     updateWorldMatrix(true, false);
 
     matrixWorld.decompose(_position, _quaternion, target);
@@ -492,7 +494,7 @@ class Object3D with EventDispatcher {
     return target;
   }
 
-  getWorldDirection(Vector3 target) {
+  Vector3 getWorldDirection(Vector3 target) {
     updateWorldMatrix(true, false);
 
     var e = matrixWorld.elements;
@@ -500,11 +502,11 @@ class Object3D with EventDispatcher {
     return target.set(e[8], e[9], e[10]).normalize();
   }
 
-  raycast(Raycaster raycaster, List<Intersection> intersects) {
+  void raycast(Raycaster raycaster, List<Intersection> intersects) {
     print("Object3D raycast todo ");
   }
 
-  traverse(callback) {
+  void traverse(callback) {
     callback(this);
 
     var children = this.children;
@@ -514,7 +516,7 @@ class Object3D with EventDispatcher {
     }
   }
 
-  traverseVisible(callback) {
+  void traverseVisible(callback) {
     if (visible == false) return;
 
     callback(this);
@@ -526,7 +528,7 @@ class Object3D with EventDispatcher {
     }
   }
 
-  traverseAncestors(callback) {
+  void traverseAncestors(callback) {
     var parent = this.parent;
 
     if (parent != null) {
@@ -536,12 +538,12 @@ class Object3D with EventDispatcher {
     }
   }
 
-  updateMatrix() {
+  void updateMatrix() {
     matrix.compose(position, quaternion, scale);
     matrixWorldNeedsUpdate = true;
   }
 
-  updateMatrixWorld([bool force = false]) {
+  void updateMatrixWorld([bool force = false]) {
     if (matrixAutoUpdate) updateMatrix();
 
     if (matrixWorldNeedsUpdate || force) {
@@ -565,7 +567,7 @@ class Object3D with EventDispatcher {
     }
   }
 
-  updateWorldMatrix(bool updateParents, bool updateChildren) {
+  void updateWorldMatrix(bool updateParents, bool updateChildren) {
     var parent = this.parent;
 
     if (updateParents == true && parent != null) {
@@ -591,7 +593,7 @@ class Object3D with EventDispatcher {
     }
   }
 
-  toJSON({Object3dMeta? meta}) {
+  Map<String, dynamic> toJSON({Object3dMeta? meta}) {
     // meta is a string when called from JSON.stringify
     var isRootObject = (meta == null || meta is String);
 
@@ -786,11 +788,11 @@ class Object3D with EventDispatcher {
     return values;
   }
 
-  clone([bool? recursive]) {
+  Object3D clone([bool? recursive]) {
     return Object3D().copy(this, recursive);
   }
 
-  copy(Object3D source, [bool? recursive = true]) {
+  Object3D copy(Object3D source, [bool? recursive = true]) {
     recursive = recursive ?? true;
 
     name = source.name;
@@ -829,7 +831,7 @@ class Object3D with EventDispatcher {
     return this;
   }
 
-  onAfterRender(
+  void onAfterRender(
       {WebGLRenderer? renderer,
       scene,
       Camera? camera,
@@ -840,7 +842,7 @@ class Object3D with EventDispatcher {
   }
 
   // 用于WebGLUniforms setOptional
-  getValue(name) {
+  Matrix4? getValue(String name) {
     if (name == "bindMatrix") {
       return bindMatrix;
     } else {
@@ -848,7 +850,7 @@ class Object3D with EventDispatcher {
     }
   }
 
-  getProperty(propertyName) {
+  dynamic getProperty(String propertyName) {
     if (propertyName == "id") {
       return id;
     } else if (propertyName == "name") {
@@ -877,7 +879,7 @@ class Object3D with EventDispatcher {
     }
   }
 
-  setProperty(String propertyName, value) {
+  Object3D setProperty(String propertyName, value) {
     if (propertyName == "id") {
       id = value;
     } else if (propertyName == "castShadow") {
@@ -897,7 +899,7 @@ class Object3D with EventDispatcher {
     return this;
   }
 
-  dispose() {}
+  void dispose() {}
 }
 
 class Object3dMeta {

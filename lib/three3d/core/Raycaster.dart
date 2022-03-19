@@ -8,7 +8,7 @@ class Raycaster {
   late Layers layers;
   late Map<String, dynamic> params;
 
-  Raycaster([origin, direction, near, far]) {
+  Raycaster([Vector3? origin, Vector3? direction, num? near, num? far]) {
     ray = Ray(origin, direction);
     // direction is assumed to be normalized (for accurate distance calculations)
 
@@ -25,11 +25,12 @@ class Raycaster {
     };
   }
 
-  int ascSort(a, b) {
+  int ascSort(Intersection a, Intersection b) {
     return a.distance - b.distance >= 0 ? 1 : -1;
   }
 
-  intersectObject4(object, raycaster, intersects, recursive) {
+  void intersectObject4(Object3D object, Raycaster raycaster,
+      List<Intersection> intersects, bool recursive) {
     if (object.layers.test(raycaster.layers)) {
       object.raycast(raycaster, intersects);
     }
@@ -43,14 +44,14 @@ class Raycaster {
     }
   }
 
-  set(origin, direction) {
+  void set(Vector3 origin, Vector3 direction) {
     // direction is assumed to be normalized (for accurate distance calculations)
 
     ray.set(origin, direction);
   }
 
-  setFromCamera(coords, camera) {
-    if (camera != null && camera.isPerspectiveCamera) {
+  void setFromCamera(Vector2 coords, Camera camera) {
+    if (camera.isPerspectiveCamera) {
       ray.origin.setFromMatrixPosition(camera.matrixWorld);
       ray
           .direction
@@ -59,7 +60,7 @@ class Raycaster {
           .sub(ray.origin)
           .normalize();
       this.camera = camera;
-    } else if (camera != null && camera.isOrthographicCamera) {
+    } else if (camera.isOrthographicCamera) {
       ray
           .origin
           .set(coords.x, coords.y,
@@ -72,7 +73,8 @@ class Raycaster {
     }
   }
 
-  intersectObject(object, recursive, intersects) {
+  List<Intersection> intersectObject(Object3D object, bool recursive,
+      [List<Intersection>? intersects]) {
     List<Intersection> _intersects = intersects ?? [];
 
     intersectObject4(object, this, _intersects, recursive);
@@ -82,7 +84,8 @@ class Raycaster {
     return _intersects;
   }
 
-  intersectObjects(objects, recursive, [List<Intersection>? intersects]) {
+  List<Intersection> intersectObjects(List<Object3D> objects, bool recursive,
+      [List<Intersection>? intersects]) {
     intersects = intersects ?? List<Intersection>.from([]);
 
     for (var i = 0, l = objects.length; i < l; i++) {
@@ -159,8 +162,13 @@ class Face {
 
   Face(this.a, this.b, this.c, this.normal, this.materialIndex);
 
-  factory Face.fromJSON(json) {
+  factory Face.fromJSON(Map<String, dynamic> json) {
     return Face(
-        json["a"], json["b"], json["c"], json["normal"], json["materialIndex"]);
+      json["a"],
+      json["b"],
+      json["c"],
+      json["normal"],
+      json["materialIndex"],
+    );
   }
 }

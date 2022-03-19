@@ -55,8 +55,8 @@ class BoxHelper extends LineSegments {
   }
 
   update() {
-    if (this.object != null) {
-      _box.setFromObject(this.object);
+    if (object != null) {
+      _box.setFromObject(object!);
     }
 
     if (_box.isEmpty()) return;
@@ -80,7 +80,7 @@ class BoxHelper extends LineSegments {
 		7: max.x, min.y, min.z
 		*/
 
-    var position = this.geometry!.attributes["position"];
+    var position = geometry!.attributes["position"];
     var array = position.array;
 
     array[0] = max.x;
@@ -110,12 +110,12 @@ class BoxHelper extends LineSegments {
 
     position.needsUpdate = true;
 
-    this.geometry!.computeBoundingSphere();
+    geometry!.computeBoundingSphere();
   }
 
   setFromObject(object) {
     this.object = object;
-    this.update();
+    update();
 
     return this;
   }

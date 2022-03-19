@@ -118,7 +118,7 @@ class Mesh extends Object3D {
     // Check boundingBox before continuing
 
     if (geometry.boundingBox != null) {
-      if (_meshray.intersectsBox(geometry.boundingBox) == false) return;
+      if (_meshray.intersectsBox(geometry.boundingBox!) == false) return;
     }
 
     var intersection;
