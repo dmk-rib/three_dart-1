@@ -11,20 +11,10 @@ class InstancedMesh extends Mesh {
   late InstancedBufferAttribute instanceMatrix;
   late BufferAttribute? instanceColor;
 
-  String _type = "InstancedMesh";
-  bool _isInstancedMesh = true;
-
-  @override
-  String get type => _type;
-  @override
-  set type(String type) => _type = type;
-
-  @override
-  bool get isInstancedMesh => _isInstancedMesh;
-  @override
-  set isInstancedMesh(bool isInstanced) => _isInstancedMesh = isInstanced;
-
   InstancedMesh(geometry, material, count) : super(geometry, material) {
+    type = "InstancedMesh";
+    isInstancedMesh = true;
+
     var dl = Float32List(count * 16);
     instanceMatrix = InstancedBufferAttribute(dl, 16, false);
     instanceColor = null;
@@ -37,30 +27,26 @@ class InstancedMesh extends Mesh {
   @override
   InstancedMesh copy(Object3D source, [bool? recursive]) {
     super.copy(source);
-
-    InstancedMesh source1 = source as InstancedMesh;
-
-    instanceMatrix.copy(source1.instanceMatrix);
-
-    if (source.instanceColor != null) {
-      instanceColor = source.instanceColor!.clone();
+    if (source is InstancedMesh) {
+      instanceMatrix.copy(source.instanceMatrix);
+      if (source.instanceColor != null) {
+        instanceColor = source.instanceColor!.clone();
+      }
+      count = source.count;
     }
-
-    count = source1.count;
-
     return this;
   }
 
-  getColorAt(index, color) {
-    color.fromArray(instanceColor!.array, index * 3);
+  Color getColorAt(int index, Color color) {
+    return color.fromArray(instanceColor!.array, index * 3);
   }
 
-  getMatrixAt(index, matrix) {
-    matrix.fromArray(instanceMatrix.array, index * 16);
+  getMatrixAt(int index, matrix) {
+    return matrix.fromArray(instanceMatrix.array, index * 16);
   }
 
   @override
-  void raycast(raycaster, intersects) {
+  void raycast(Raycaster raycaster, List<Intersection> intersects) {
     var matrixWorld = this.matrixWorld;
     var raycastTimes = count;
 
@@ -95,22 +81,22 @@ class InstancedMesh extends Mesh {
     }
   }
 
-  setColorAt(index, color) {
+  List<num> setColorAt(int index, Color color) {
     instanceColor ??= BufferAttribute(
         Float32List((instanceMatrix.count * 3).toInt()), 3, false);
 
-    color.toArray(instanceColor!.array, index * 3);
+    return color.toArray(instanceColor!.array, index * 3);
   }
 
-  setMatrixAt(index, Matrix4 matrix) {
+  setMatrixAt(int index, Matrix4 matrix) {
     matrix.toArray(instanceMatrix.array, index * 16);
   }
 
   @override
-  updateMorphTargets() {}
+  void updateMorphTargets() {}
 
   @override
-  dispose() {
+  void dispose() {
     dispatchEvent(Event({"type": "dispose"}));
   }
 }

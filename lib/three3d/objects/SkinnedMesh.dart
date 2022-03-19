@@ -8,21 +8,23 @@ var _skinWeight = Vector4.init();
 var _vector = Vector3.init();
 var _matrix = Matrix4();
 
-class SkinnedMesh extends Mesh {
-  bool isSkinnedMesh = true;
-  String bindMode = "attached";
-  Matrix4? bindMatrix = Matrix4();
+class SkinnedMesh extends Mesh { 
+  String bindMode = "attached"; 
   Matrix4 bindMatrixInverse = Matrix4();
-  Skeleton? skeleton;
-  String type = "SkinnedMesh";
+ 
+  SkinnedMesh(geometry, material) : super(geometry, material) {
+    type = "SkinnedMesh";
+    isSkinnedMesh = true;
+    bindMatrix = Matrix4();
+  }
 
-  SkinnedMesh(geometry, material) : super(geometry, material) {}
-
-  clone([bool? recursive]) {
+  @override
+  SkinnedMesh clone([bool? recursive]) {
     return SkinnedMesh(geometry!, material).copy(this, recursive);
   }
 
-  copy(Object3D source, [bool? recursive]) {
+  @override
+  SkinnedMesh copy(Object3D source, [bool? recursive]) {
     super.copy(source);
 
     SkinnedMesh source1 = source as SkinnedMesh;
@@ -36,7 +38,7 @@ class SkinnedMesh extends Mesh {
     return this;
   }
 
-  bind(skeleton, Matrix4? bindMatrix) {
+  void bind(Skeleton skeleton, Matrix4? bindMatrix) {
     this.skeleton = skeleton;
 
     if (bindMatrix == null) {
@@ -51,11 +53,11 @@ class SkinnedMesh extends Mesh {
     bindMatrixInverse.copy(bindMatrix).invert();
   }
 
-  pose() {
+  void pose() {
     skeleton!.pose();
   }
 
-  normalizeSkinWeights() {
+  void normalizeSkinWeights() {
     var vector = Vector4.init();
 
     var skinWeight = geometry!.attributes["skinWeight"];
@@ -79,7 +81,8 @@ class SkinnedMesh extends Mesh {
     }
   }
 
-  updateMatrixWorld([bool force = false]) {
+  @override
+  void updateMatrixWorld([bool force = false]) {
     super.updateMatrixWorld(force);
 
     if (bindMode == 'attached') {
@@ -91,7 +94,7 @@ class SkinnedMesh extends Mesh {
     }
   }
 
-  boneTransform(index, target) {
+  Vector3 boneTransform(int index, Vector3 target) {
     var skeleton = this.skeleton;
     var geometry = this.geometry!;
 
@@ -121,7 +124,8 @@ class SkinnedMesh extends Mesh {
     return target.applyMatrix4(bindMatrixInverse);
   }
 
-  getValue(name) {
+  @override
+  Matrix4? getValue(String name) {
     if (name == "bindMatrix") {
       return bindMatrix;
     } else if (name == "bindMatrixInverse") {

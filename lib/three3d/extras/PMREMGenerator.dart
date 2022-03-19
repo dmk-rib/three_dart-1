@@ -308,7 +308,7 @@ class PMREMGenerator {
       renderer.render(scene, cubeCamera);
     }
     backgroundBox.geometry?.dispose();
-    backgroundBox.material.dispose();
+    backgroundBox.material?.dispose();
 
     renderer.toneMapping = toneMapping;
     renderer.autoClear = originalAutoClear;

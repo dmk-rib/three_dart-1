@@ -66,9 +66,7 @@ class ArrowHelper extends Object3D {
     headLength ??= 0.2 * length;
     headWidth ??= 0.2 * headLength;
 
-    line
-        .scale
-        .set(1, Math.max(0.0001, length - headLength), 1); // see #17458
+    line.scale.set(1, Math.max(0.0001, length - headLength), 1); // see #17458
     line.updateMatrix();
 
     cone.scale.set(headWidth, headLength, headWidth);
@@ -76,19 +74,18 @@ class ArrowHelper extends Object3D {
     cone.updateMatrix();
   }
 
-  setColor(color) {
-    line.material.color.set(color);
-    cone.material.color.set(color);
+  void setColor(Color color) {
+    line.material?.color?.set(color);
+    cone.material?.color?.set(color);
   }
 
-  copy(source, [bool? recursive]) {
+  @override
+  ArrowHelper copy(Object3D source, [bool? recursive]) {
     super.copy(source, false);
-
-    var source1 = source as ArrowHelper;
-
-    line.copy(source1.line, false);
-    cone.copy(source1.cone, false);
-
+    if (source is ArrowHelper) {
+      line.copy(source.line, false);
+      cone.copy(source.cone, false);
+    }
     return this;
   }
 }

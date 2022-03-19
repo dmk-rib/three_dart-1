@@ -17,20 +17,23 @@ class Points extends Object3D {
   }
 
   Points.fromJSON(Map<String, dynamic> json, Map<String, dynamic> rootJSON)
-      : super.fromJSON(json, rootJSON) {}
+      : super.fromJSON(json, rootJSON) {
+    type = 'Points';
+    isPoints = true;
+  }
 
-  copy(Object3D source, [bool? recursive]) {
+  @override
+  Points copy(Object3D source, [bool? recursive]) {
     super.copy(source);
-
-    Points source1 = source as Points;
-
-    material = source1.material;
-    geometry = source1.geometry;
-
+    if (source is Points) {
+      material = source.material;
+      geometry = source.geometry;
+    }
     return this;
   }
 
-  raycast(raycaster, intersects) {
+  @override
+  void raycast(Raycaster raycaster, List<Intersection> intersects) {
     var geometry = this.geometry!;
     var matrixWorld = this.matrixWorld;
     var threshold = raycaster.params["Points"].threshold;
@@ -51,8 +54,7 @@ class Points extends Object3D {
     _pointsinverseMatrix.copy(matrixWorld).invert();
     _pointsray.copy(raycaster.ray).applyMatrix4(_pointsinverseMatrix);
 
-    var localThreshold =
-        threshold / ((scale.x + scale.y + scale.z) / 3);
+    var localThreshold = threshold / ((scale.x + scale.y + scale.z) / 3);
     var localThresholdSq = localThreshold * localThreshold;
 
     var index = geometry.index;
@@ -86,14 +88,14 @@ class Points extends Object3D {
     }
   }
 
-  updateMorphTargets() {
+  void updateMorphTargets() {
     var geometry = this.geometry!;
 
     if (geometry.isBufferGeometry) {
       var morphAttributes = geometry.morphAttributes;
       var keys = morphAttributes.keys.toList();
 
-      if (keys.length > 0) {
+      if (keys.isNotEmpty) {
         var morphAttribute = morphAttributes[keys[0]];
 
         if (morphAttribute != null) {
@@ -119,8 +121,14 @@ class Points extends Object3D {
   }
 }
 
-testPoint(point, index, localThresholdSq, matrixWorld, raycaster, intersects,
-    object) {
+void testPoint(
+    Vector3 point,
+    num index,
+    num localThresholdSq,
+    Matrix4 matrixWorld,
+    Raycaster raycaster,
+    List<Intersection> intersects,
+    Object3D object) {
   var rayPointDistanceSq = _pointsray.distanceSqToPoint(point);
 
   if (rayPointDistanceSq < localThresholdSq) {
@@ -133,13 +141,13 @@ testPoint(point, index, localThresholdSq, matrixWorld, raycaster, intersects,
 
     if (distance < raycaster.near || distance > raycaster.far) return;
 
-    intersects.add({
+    intersects.add(Intersection({
       "distance": distance,
       "distanceToRay": Math.sqrt(rayPointDistanceSq),
       "point": intersectPoint,
       "index": index,
       "face": null,
       "object": object
-    });
+    }));
   }
 }

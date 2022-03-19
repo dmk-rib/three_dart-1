@@ -7,20 +7,22 @@ var _ray = Ray(null, null);
 var _sphere = Sphere(null, null);
 
 class Line extends Object3D {
-  String type = "Line";
-  bool isLine = true;
-
   Line(BufferGeometry? geometry, Material? material) : super() {
     this.geometry = geometry ?? BufferGeometry();
     this.material = material ?? LineBasicMaterial(<String, dynamic>{});
-
+    type = "Line";
+    isLine = true;
     updateMorphTargets();
   }
 
   Line.fromJSON(Map<String, dynamic> json, Map<String, dynamic> rootJSON)
-      : super.fromJSON(json, rootJSON) {}
+      : super.fromJSON(json, rootJSON) {
+    type = "Line";
+    isLine = true;
+  }
 
-  copy(Object3D source, [bool? recursive]) {
+  @override
+  Line copy(Object3D source, [bool? recursive]) {
     super.copy(source);
 
     material = source.material;
@@ -29,11 +31,12 @@ class Line extends Object3D {
     return this;
   }
 
-  clone([bool? recursive = true]) {
+  @override
+  Line clone([bool? recursive = true]) {
     return Line(geometry!, material!).copy(this, recursive);
   }
 
-  computeLineDistances() {
+  Line computeLineDistances() {
     var geometry = this.geometry!;
 
     if (geometry.isBufferGeometry) {
@@ -68,7 +71,8 @@ class Line extends Object3D {
     return this;
   }
 
-  raycast(Raycaster raycaster, List<Intersection> intersects) {
+  @override
+  void raycast(Raycaster raycaster, List<Intersection> intersects) {
     var geometry = this.geometry!;
     var matrixWorld = this.matrixWorld;
     var threshold = raycaster.params["Line"]["threshold"];
@@ -173,7 +177,7 @@ class Line extends Object3D {
     }
   }
 
-  updateMorphTargets() {
+  void updateMorphTargets() {
     var geometry = this.geometry!;
 
     if (geometry.isBufferGeometry) {

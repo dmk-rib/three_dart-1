@@ -4,12 +4,14 @@ var _lsstart = Vector3.init();
 var _lsend = Vector3.init();
 
 class LineSegments extends Line {
-  String type = 'LineSegments';
-  bool isLineSegments = true;
+  LineSegments(BufferGeometry? geometry, Material? material)
+      : super(geometry, material) {
+    type = 'LineSegments';
+    isLineSegments = true;
+  }
 
-  LineSegments(geometry, material) : super(geometry, material) {}
-
-  computeLineDistances() {
+  @override
+  LineSegments computeLineDistances() {
     var geometry = this.geometry!;
 
     if (geometry.isBufferGeometry) {

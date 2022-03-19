@@ -50,7 +50,7 @@ class BufferGeometry with EventDispatcher {
   int? maxInstanceCount;
   int? instanceCount;
 
-  BufferGeometry() {}
+  BufferGeometry();
 
   BufferGeometry.fromJSON(
       Map<String, dynamic> json, Map<String, dynamic> rootJSON) {

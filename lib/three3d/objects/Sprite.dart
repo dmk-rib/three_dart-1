@@ -23,7 +23,7 @@ class Sprite extends Object3D {
 
   bool isSprite = true;
 
-  Sprite(material) : super() {
+  Sprite([Material? material]) : super() {
     type = 'Sprite';
 
     if (_geometry == null) {
@@ -66,14 +66,12 @@ class Sprite extends Object3D {
   }
 
   Sprite.fromJSON(Map<String, dynamic> json, Map<String, dynamic> rootJSON)
-      : super.fromJSON(json, rootJSON) {}
+      : super.fromJSON(json, rootJSON) {
+    type = 'Sprite';
+  }
 
-  raycast(raycaster, intersects) {
-    if (raycaster.camera == null) {
-      print(
-          'THREE.Sprite: "Raycaster.camera" needs to be set in order to raycast against sprites.');
-    }
-
+  @override
+  void raycast(Raycaster raycaster, List<Intersection> intersects) {
     _worldScale.setFromMatrixScale(matrixWorld);
 
     _viewWorldMatrix.copy(raycaster.camera.matrixWorld);
@@ -88,7 +86,7 @@ class Sprite extends Object3D {
     }
 
     var rotation = material.rotation;
-    var sin, cos;
+    double? sin, cos;
 
     if (rotation != 0) {
       cos = Math.cos(rotation);
@@ -132,34 +130,27 @@ class Sprite extends Object3D {
     intersects.add(Intersection({
       "distance": distance,
       "point": _intersectPoint.clone(),
-      "uv": Triangle.static_getUV(
-          _intersectPoint,
-          _spritevA,
-          _spritevB,
-          _spritevC,
-          _spriteuvA,
-          _spriteuvB,
-          _spriteuvC,
-          Vector2(null, null)),
+      "uv": Triangle.static_getUV(_intersectPoint, _spritevA, _spritevB,
+          _spritevC, _spriteuvA, _spriteuvB, _spriteuvC, Vector2(null, null)),
       "face": null,
       "object": this
     }));
   }
 
-  copy(Object3D source, [bool? recursive]) {
+  @override
+  Sprite copy(Object3D source, [bool? recursive]) {
     super.copy(source);
 
-    Sprite source1 = source as Sprite;
-
-    if (source1.center != null) center.copy(source1.center);
-
-    material = source1.material;
-
+    if (source is Sprite) {
+      if (source.center != null) center.copy(source.center);
+      material = source.material;
+    }
     return this;
   }
 }
 
-transformVertex(vertexPosition, mvPosition, center, scale, sin, cos) {
+void transformVertex(vertexPosition, Vector3 mvPosition, Vector2 center, scale,
+    double? sin, double? cos) {
   // compute position in camera space
   _alignedPosition
       .subVectors(vertexPosition, center)
@@ -167,7 +158,7 @@ transformVertex(vertexPosition, mvPosition, center, scale, sin, cos) {
       .multiply(scale);
 
   // to check if rotation is not zero
-  if (sin != null) {
+  if (sin != null && cos != null) {
     _rotatedPosition.x =
         (cos * _alignedPosition.x) - (sin * _alignedPosition.y);
     _rotatedPosition.y =

@@ -19,7 +19,7 @@ class Skeleton {
     init();
   }
 
-  init() {
+  void init() {
     var bones = this.bones;
     var boneInverses = this.boneInverses;
 
@@ -45,7 +45,7 @@ class Skeleton {
     }
   }
 
-  calculateInverses() {
+  void calculateInverses() {
     boneInverses.length = 0;
     boneInverses.clear();
 
@@ -59,7 +59,7 @@ class Skeleton {
     }
   }
 
-  pose() {
+  void pose() {
     // recover the bind-time world matrices
 
     for (var i = 0, il = bones.length; i < il; i++) {
@@ -88,7 +88,7 @@ class Skeleton {
     }
   }
 
-  update() {
+  void update() {
     var bones = this.bones;
     var boneInverses = this.boneInverses;
     var boneMatrices = this.boneMatrices;
@@ -112,11 +112,11 @@ class Skeleton {
     }
   }
 
-  clone() {
+  Skeleton clone() {
     return Skeleton(bones: bones, boneInverses: boneInverses);
   }
 
-  computeBoneTexture() {
+  Skeleton computeBoneTexture() {
     // layout (1 matrix = 4 pixels)
     //      RGBA RGBA RGBA RGBA (=> column1, column2, column3, column4)
     //  with  8x8  pixel texture max   16 bones * 4 pixels =  (8 * 8)
@@ -147,7 +147,7 @@ class Skeleton {
     return this;
   }
 
-  getBoneByName(name) {
+  Bone? getBoneByName(name) {
     for (var i = 0, il = bones.length; i < il; i++) {
       var bone = bones[i];
 
@@ -159,7 +159,7 @@ class Skeleton {
     return null;
   }
 
-  dispose() {
+  void dispose() {
     if (boneTexture != null) {
       boneTexture!.dispose();
 
@@ -167,11 +167,11 @@ class Skeleton {
     }
   }
 
-  fromJSON(json, bones) {
-    uuid = json.uuid;
+  Skeleton fromJSON(Map<String, dynamic> json, List<Bone> bones) {
+    uuid = json['uuid'];
 
-    for (var i = 0, l = json.bones.length; i < l; i++) {
-      var uuid = json.bones[i];
+    for (var i = 0, l = json['bones'].length; i < l; i++) {
+      var uuid = json['bones'][i];
       var bone = bones[uuid];
 
       if (bone == null) {
@@ -180,7 +180,7 @@ class Skeleton {
       }
 
       this.bones.add(bone);
-      boneInverses.add(Matrix4().fromArray(json.boneInverses[i]));
+      boneInverses.add(Matrix4().fromArray(json['boneInverses'][i]));
     }
 
     init();
@@ -188,7 +188,7 @@ class Skeleton {
     return this;
   }
 
-  toJSON() {
+  Map<String, dynamic> toJSON() {
     Map<String, dynamic> data = {
       "metadata": {
         "version": 4.5,
