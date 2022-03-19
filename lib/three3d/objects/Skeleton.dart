@@ -167,11 +167,11 @@ class Skeleton {
     }
   }
 
-  Skeleton fromJSON(Map<String, dynamic> json, List<Bone> bones) {
-    uuid = json['uuid'];
+  fromJSON(json, bones) {
+    uuid = json.uuid;
 
-    for (var i = 0, l = json['bones'].length; i < l; i++) {
-      var uuid = json['bones'][i];
+    for (var i = 0, l = json.bones.length; i < l; i++) {
+      var uuid = json.bones[i];
       var bone = bones[uuid];
 
       if (bone == null) {
@@ -180,7 +180,7 @@ class Skeleton {
       }
 
       this.bones.add(bone);
-      boneInverses.add(Matrix4().fromArray(json['boneInverses'][i]));
+      boneInverses.add(Matrix4().fromArray(json.boneInverses[i]));
     }
 
     init();
