@@ -588,10 +588,10 @@ class Vector3 {
     return array;
   }
 
-  Vector3 fromBufferAttribute(attribute, int index) {
-    x = attribute.getX(index);
-    y = attribute.getY(index);
-    z = attribute.getZ(index);
+  Vector3 fromBufferAttribute(BufferAttribute attribute, int index) {
+    x = attribute.getX(index)!;
+    y = attribute.getY(index)!;
+    z = attribute.getZ(index)!;
 
     return this;
   }

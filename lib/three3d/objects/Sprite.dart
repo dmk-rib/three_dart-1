@@ -29,7 +29,7 @@ class Sprite extends Object3D {
     if (_geometry == null) {
       _geometry = BufferGeometry();
 
-      var float32Array = Float32List.fromList([
+      var float32List = Float32List.fromList([
         -0.5,
         -0.5,
         0,
@@ -52,7 +52,7 @@ class Sprite extends Object3D {
         1
       ]);
 
-      var interleavedBuffer = InterleavedBuffer(float32Array, 5);
+      var interleavedBuffer = InterleavedBuffer(float32List, 5);
 
       _geometry.setIndex([0, 1, 2, 0, 2, 3]);
       _geometry.setAttribute('position',

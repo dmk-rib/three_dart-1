@@ -65,7 +65,7 @@ class Points extends Object3D {
           Math.min(index.count, (drawRange["start"]! + drawRange["count"]!));
 
       for (var i = start, il = end; i < il; i++) {
-        var a = index.getX(i);
+        var a = index.getX(i)!;
 
         _position.fromBufferAttribute(positionAttribute, a.toInt());
 

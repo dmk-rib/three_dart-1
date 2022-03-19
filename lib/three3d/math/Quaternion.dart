@@ -562,10 +562,10 @@ class Quaternion {
   }
 
   Quaternion fromBufferAttribute(BufferAttribute attribute, int index) {
-    _x = attribute.getX(index);
-    _y = attribute.getY(index);
-    _z = attribute.getZ(index);
-    _w = attribute.getW(index);
+    _x = attribute.getX(index)!;
+    _y = attribute.getY(index)!;
+    _z = attribute.getZ(index)!;
+    _w = attribute.getW(index)!;
 
     return this;
   }

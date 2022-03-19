@@ -54,11 +54,11 @@ class WebGLShadowMap {
       "fragmentShader": vsm_frag
     });
 
-    var _float32Array =
+    var _float32List =
         Float32List.fromList([-1.0, -1.0, 0.5, 3.0, -1.0, 0.5, -1.0, 3.0, 0.5]);
 
     fullScreenTri.setAttribute(
-        'position', Float32BufferAttribute(_float32Array, 3, false));
+        'position', Float32BufferAttribute(_float32List, 3, false));
 
     fullScreenMesh = Mesh(fullScreenTri, shadowMaterialVertical);
 
@@ -72,7 +72,7 @@ class WebGLShadowMap {
     if (scope.enabled == false) return;
     if (scope.autoUpdate == false && scope.needsUpdate == false) return;
 
-    if (lights.length == 0) return;
+    if (lights.isEmpty) return;
 
     var currentRenderTarget = _renderer.getRenderTarget();
     var activeCubeFace = _renderer.getActiveCubeFace();

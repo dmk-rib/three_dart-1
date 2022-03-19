@@ -95,9 +95,9 @@ class Box3 {
     num maxZ = -Infinity;
 
     for (var i = 0, l = attribute.count; i < l; i++) {
-      num x = attribute.getX(i);
-      num y = attribute.getY(i);
-      num z = attribute.getZ(i);
+      num x = attribute.getX(i)!;
+      num y = attribute.getY(i)!;
+      num z = attribute.getZ(i)!;
 
       if (x < minX) minX = x;
       if (y < minY) minY = y;

@@ -37,8 +37,8 @@ class WireframeGeometry extends BufferGeometry {
 
         for (var i = groupStart, l = (groupStart + groupCount); i < l; i += 3) {
           for (var j = 0; j < 3; j++) {
-            var index1 = indices!.getX(i + j);
-            var index2 = indices.getX(i + (j + 1) % 3);
+            int index1 = indices!.getX(i + j)!.toInt();
+            int index2 = indices.getX(i + (j + 1) % 3)!.toInt();
 
             start.fromBufferAttribute(position, index1);
             end.fromBufferAttribute(position, index2);

@@ -585,9 +585,9 @@ class BufferGeometry with EventDispatcher {
 
       if (index != null) {
         for (var i = 0, il = index.count; i < il; i += 3) {
-          var vA = index.getX(i + 0);
-          var vB = index.getX(i + 1);
-          var vC = index.getX(i + 2);
+          var vA = index.getX(i + 0)!.toInt();
+          var vB = index.getX(i + 1)!.toInt();
+          var vC = index.getX(i + 2)!.toInt();
 
           pA.fromBufferAttribute(positionAttribute, vA);
           pB.fromBufferAttribute(positionAttribute, vB);

@@ -1,10 +1,10 @@
 part of three_core;
 
 class GLBufferAttribute extends BaseBufferAttribute {
-  bool isGLBufferAttribute = true;
-
-  GLBufferAttribute(buffer, String type, itemSize, elementSize, count)
+  GLBufferAttribute(
+      int buffer, String type, int itemSize, int elementSize, int count)
       : super() {
+    isGLBufferAttribute = true;
     this.buffer = buffer;
     this.type = type;
     this.itemSize = itemSize;
@@ -18,26 +18,26 @@ class GLBufferAttribute extends BaseBufferAttribute {
     if (value == true) version++;
   }
 
-  setBuffer(buffer) {
+  GLBufferAttribute setBuffer(int buffer) {
     this.buffer = buffer;
 
     return this;
   }
 
-  setType(String type, elementSize) {
+  GLBufferAttribute setType(String type, int elementSize) {
     this.type = type;
     this.elementSize = elementSize;
 
     return this;
   }
 
-  setItemSize(itemSize) {
+  GLBufferAttribute setItemSize(int itemSize) {
     this.itemSize = itemSize;
 
     return this;
   }
 
-  setCount(count) {
+  GLBufferAttribute setCount(int count) {
     this.count = count;
 
     return this;

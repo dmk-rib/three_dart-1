@@ -1,34 +1,44 @@
 part of three_core;
 
-class BufferAttribute extends BaseBufferAttribute {
-  String type = "BufferAttribute";
+class BufferAttribute<TData extends TypedData> extends BaseBufferAttribute {
   final _vector = Vector3.init();
   final _vector2 = Vector2(null, null);
 
   bool isBufferAttribute = true;
 
-  BufferAttribute(arrayList, int itemSize, [bool normalized = false]) {
-    if (arrayList is NativeArray) {
+  BufferAttribute(TData arrayList, int itemSize, [bool normalized = false]) {
+    type = "BufferAttribute";
+    if (arrayList is Uint8List) {
       array = arrayList;
-    } else if (arrayList is Uint8List) {
-      array = Uint8Array.from(arrayList);
     } else if (arrayList is Uint16List) {
-      array = Uint16Array.from(arrayList);
+      array = arrayList;
     } else if (arrayList is Uint32List) {
-      array = Uint32Array.from(arrayList);
+      array = arrayList;
     } else if (arrayList is Float32List) {
-      array = Float32Array.from(arrayList);
-    } else if (arrayList is List) {
-      // 确认 正确的BufferAttribute 使用了正确的List 类型 默认 Float32
-      print(
-          " BufferAttribute type: $type ${this} arrayList is ${arrayList.runtimeType} need confirm ? ");
-      array = Float32Array.from(arrayList);
+      array = arrayList;
     } else {
       throw ("BufferAttribute  arrayList: ${arrayList.runtimeType} is need support ....  ");
     }
-
+    // if (arrayList is NativeArray) {
+    //   array = arrayList;
+    // } else if (arrayList is Uint8List) {
+    //   array = Uint8Array.from(arrayList);
+    // } else if (arrayList is Uint16List) {
+    //   array = Uint16Array.from(arrayList);
+    // } else if (arrayList is Uint32List) {
+    //   array = Uint32Array.from(arrayList);
+    // } else if (arrayList is Float32List) {
+    //   array = Float32Array.from(arrayList);
+    // } else if (arrayList is List) {
+    //   // 确认 正确的BufferAttribute 使用了正确的List 类型 默认 Float32
+    //   print(
+    //       " BufferAttribute type: $type ${this} arrayList is ${arrayList.runtimeType} need confirm ? ");
+    //   array = Float32Array.from(arrayList);
+    // } else {
+    //   throw ("BufferAttribute  arrayList: ${arrayList.runtimeType} is need support ....  ");
+    // }
     this.itemSize = itemSize;
-    count = array != null ? (array.length / itemSize).toInt() : 0;
+    count = array.length ~/ itemSize;
     this.normalized = normalized == true;
 
     usage = StaticDrawUsage;
@@ -51,17 +61,28 @@ class BufferAttribute extends BaseBufferAttribute {
 
   BufferAttribute copy(BufferAttribute source) {
     name = source.name;
-    array = source.array.clone();
     itemSize = source.itemSize;
     count = source.count;
     normalized = source.normalized;
     type = source.type;
     usage = source.usage;
 
+    if (source.array is Uint8List) {
+      array = Uint8List.fromList(source.array.cast());
+    } else if (source.array is Uint16List) {
+      array = Uint16List.fromList(source.array.cast());
+    } else if (source.array is Uint32List) {
+      array = Uint32List.fromList(source.array.cast());
+    } else if (source.array is Float32List) {
+      array = Float32List.fromList(source.array.cast());
+    } else {
+      throw ("BufferAttribute  arrayList: ${source.array.runtimeType} is need support ....  ");
+    }
+
     return this;
   }
 
-  BufferAttribute copyAt(num index1, BufferAttribute attribute, num index2) {
+  BufferAttribute copyAt(int index1, BufferAttribute attribute, int index2) {
     index1 *= itemSize;
     index2 *= attribute.itemSize;
 
@@ -156,9 +177,9 @@ class BufferAttribute extends BaseBufferAttribute {
 
   void applyMatrix4(Matrix4 m) {
     for (var i = 0, l = count; i < l; i++) {
-      _vector.x = getX(i);
-      _vector.y = getY(i);
-      _vector.z = getZ(i);
+      _vector.x = getX(i)!;
+      _vector.y = getY(i)!;
+      _vector.z = getZ(i)!;
 
       _vector.applyMatrix4(m);
 
@@ -168,9 +189,9 @@ class BufferAttribute extends BaseBufferAttribute {
 
   BufferAttribute applyNormalMatrix(m) {
     for (var i = 0, l = count; i < l; i++) {
-      _vector.x = getX(i);
-      _vector.y = getY(i);
-      _vector.z = getZ(i);
+      _vector.x = getX(i)!;
+      _vector.y = getY(i)!;
+      _vector.z = getZ(i)!;
 
       _vector.applyNormalMatrix(m);
 
@@ -182,9 +203,9 @@ class BufferAttribute extends BaseBufferAttribute {
 
   BufferAttribute transformDirection(Matrix4 m) {
     for (var i = 0, l = count; i < l; i++) {
-      _vector.x = getX(i);
-      _vector.y = getY(i);
-      _vector.z = getZ(i);
+      _vector.x = getX(i)!;
+      _vector.y = getY(i)!;
+      _vector.z = getZ(i)!;
 
       _vector.transformDirection(m);
 
@@ -200,7 +221,7 @@ class BufferAttribute extends BaseBufferAttribute {
     return this;
   }
 
-  getX(int index) {
+  num? getX(int index) {
     return getAt(index * itemSize);
   }
 
@@ -210,7 +231,7 @@ class BufferAttribute extends BaseBufferAttribute {
     return this;
   }
 
-  getY(int index) {
+  num? getY(int index) {
     return getAt(index * itemSize + 1);
   }
 
@@ -220,7 +241,7 @@ class BufferAttribute extends BaseBufferAttribute {
     return this;
   }
 
-  getZ(int index) {
+  num? getZ(int index) {
     return getAt(index * itemSize + 2);
   }
 
@@ -230,11 +251,11 @@ class BufferAttribute extends BaseBufferAttribute {
     return this;
   }
 
-  getW(int index) {
+  num? getW(int index) {
     return getAt(index * itemSize + 3);
   }
 
-  getAt(int index) {
+  num? getAt(int index) {
     if (index < array.length) {
       return array[index];
     } else {
@@ -284,13 +305,17 @@ class BufferAttribute extends BaseBufferAttribute {
 
   BufferAttribute clone() {
     if (type == "BufferAttribute") {
-      return BufferAttribute(array, itemSize, false).copy(this);
+      final typed = array as TData;
+      return BufferAttribute(typed, itemSize, false).copy(this);
     } else if (type == "Float32BufferAttribute") {
-      return Float32BufferAttribute(array, itemSize, false).copy(this);
+      final typed = array as Float32List;
+      return Float32BufferAttribute(typed, itemSize, false).copy(this);
     } else if (type == "Uint8BufferAttribute") {
-      return Uint8BufferAttribute(array, itemSize, false).copy(this);
+      final typed = array as Uint8List;
+      return Uint8BufferAttribute(typed, itemSize, false).copy(this);
     } else if (type == "Uint16BufferAttribute") {
-      return Uint16BufferAttribute(array, itemSize, false).copy(this);
+      final typed = array as Uint16List;
+      return Uint16BufferAttribute(typed, itemSize, false).copy(this);
     } else {
       throw ("BufferAttribute type: $type clone need support ....  ");
     }
@@ -305,10 +330,9 @@ class BufferAttribute extends BaseBufferAttribute {
     // 	"array": this.array.sublist(0),
     // 	"normalized": this.normalized
     // };
-
-    var data = {
+    Map<String, dynamic> data = {
       "itemSize": itemSize,
-      "type": array.runtimeType.toString(),
+      "type": array.runtimeType.toString(), //.replaceAll('List', 'Array'),
       "array": array.sublist(0),
       "normalized": normalized
     };
@@ -323,82 +347,80 @@ class BufferAttribute extends BaseBufferAttribute {
   }
 }
 
-class Int8BufferAttribute extends BufferAttribute {
-  @override
-  String get type => "Int8BufferAttribute";
-
+class Int8BufferAttribute extends BufferAttribute<Int8List> {
   Int8BufferAttribute(Int8List array, int itemSize, [bool normalized = false])
-      : super(array, itemSize, normalized);
+      : super(array, itemSize, normalized) {
+    type = "Int8BufferAttribute";
+  }
 }
 
-class Uint8BufferAttribute extends BufferAttribute {
-  @override
-  String get type => "Uint8BufferAttribute";
+class Uint8BufferAttribute extends BufferAttribute<Uint8List> {
   Uint8BufferAttribute(Uint8List array, int itemSize, [bool normalized = false])
-      : super(array, itemSize, normalized);
+      : super(array, itemSize, normalized) {
+    type = "Uint8BufferAttribute";
+  }
 }
 
-class Uint8ClampedBufferAttribute extends BufferAttribute {
-  @override
-  String get type => "Uint8ClampedBufferAttribute";
+class Uint8ClampedBufferAttribute extends BufferAttribute<Uint8List> {
   Uint8ClampedBufferAttribute(Uint8List array, int itemSize,
       [bool normalized = false])
-      : super(array, itemSize, normalized);
+      : super(array, itemSize, normalized) {
+    type = "Uint8ClampedBufferAttribute";
+  }
 }
 
-class Int16BufferAttribute extends BufferAttribute {
-  @override
-  String get type => "Int16BufferAttribute";
+class Int16BufferAttribute extends BufferAttribute<Int16List> {
   Int16BufferAttribute(Int16List array, int itemSize, [bool normalized = false])
-      : super(array, itemSize, normalized);
+      : super(array, itemSize, normalized) {
+    type = "Int16BufferAttribute";
+  }
 }
 
 // Int16BufferAttribute.prototype = Object.create( BufferAttribute.prototype );
 // Int16BufferAttribute.prototype.constructor = Int16BufferAttribute;
 
-class Uint16BufferAttribute extends BufferAttribute {
-  @override
-  String get type => "Uint16BufferAttribute";
+class Uint16BufferAttribute extends BufferAttribute<Uint16List> {
   Uint16BufferAttribute(Uint16List array, int itemSize,
       [bool normalized = false])
-      : super(array, itemSize, normalized);
+      : super(array, itemSize, normalized) {
+    type = "Uint16BufferAttribute";
+  }
 }
 
-class Int32BufferAttribute extends BufferAttribute {
-  @override
-  String get type => "Int32BufferAttribute";
+class Int32BufferAttribute extends BufferAttribute<Int32List> {
   Int32BufferAttribute(Int32List array, int itemSize, [bool normalized = false])
-      : super(array, itemSize, normalized);
+      : super(array, itemSize, normalized) {
+    type = "Int32BufferAttribute";
+  }
 }
 
-class Uint32BufferAttribute extends BufferAttribute {
-  @override
-  String get type => "Uint32BufferAttribute";
+class Uint32BufferAttribute extends BufferAttribute<Uint32List> {
   Uint32BufferAttribute(Uint32List array, int itemSize,
       [bool normalized = false])
-      : super(array, itemSize, normalized);
+      : super(array, itemSize, normalized) {
+    type = "Uint32BufferAttribute";
+  }
 }
 
 class Float16BufferAttribute extends BufferAttribute {
-  @override
-  String get type => "Float16BufferAttribute";
   Float16BufferAttribute(array, int itemSize, [bool normalized = false])
-      : super(array, itemSize, normalized);
+      : super(array, itemSize, normalized) {
+    type = "Float16BufferAttribute";
+  }
 }
 
-class Float32BufferAttribute extends BufferAttribute {
-  @override
-  String get type => "Float32BufferAttribute";
-
+class Float32BufferAttribute extends BufferAttribute<Float32List> {
   Float32BufferAttribute(Float32List array, int itemSize,
       [bool normalized = false])
-      : super(array, itemSize, normalized);
+      : super(array, itemSize, normalized) {
+    type = "Float32BufferAttribute";
+  }
 }
 
-class Float64BufferAttribute extends BufferAttribute {
-  @override
-  String get type => "Float64BufferAttribute";
+class Float64BufferAttribute extends BufferAttribute<Float64List> {
   Float64BufferAttribute(Float64List array, int itemSize,
       [bool normalized = false])
-      : super(array, itemSize, normalized);
+      : super(array, itemSize, normalized) {
+    type = "Float64BufferAttribute";
+  }
 }

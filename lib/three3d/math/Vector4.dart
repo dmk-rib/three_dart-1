@@ -536,9 +536,9 @@ class Vector4 {
   }
 
   Vector4 fromBufferAttribute(BufferAttribute attribute, int index) {
-    x = attribute.getX(index);
-    y = attribute.getY(index);
-    z = attribute.getZ(index);
+    x = attribute.getX(index)!;
+    y = attribute.getY(index)!;
+    z = attribute.getZ(index)!;
     w = attribute.getW(index) ?? 0;
 
     return this;

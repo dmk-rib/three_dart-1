@@ -41,11 +41,11 @@ arrayMax(array) {
 // };
 
 TypedData getTypedArray(String type, buffer) {
-  if (type == "Uint32Array") {
+  if (type == "Uint32Array" || type == "Uint32List") {
     return Uint32List.fromList(buffer);
-  } else if (type == "Uint16Array") {
+  } else if (type == "Uint16Array" || type == "Uint16List") {
     return Uint16List.fromList(buffer);
-  } else if (type == "Float32Array") {
+  } else if (type == "Float32Array" || type == "Float32List") {
     return Float32List.fromList(buffer);
   } else {
     throw (" Util.dart getTypedArray type: $type is not support ");

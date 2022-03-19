@@ -109,8 +109,8 @@ class Line extends Object3D {
           Math.min(index.count, (drawRange["start"]! + drawRange["count"]!));
 
       for (var i = start, l = end - 1; i < l; i += step) {
-        var a = index.getX(i);
-        var b = index.getX(i + 1);
+        var a = index.getX(i)!;
+        var b = index.getX(i + 1)!;
 
         vStart.fromBufferAttribute(positionAttribute, a.toInt());
         vEnd.fromBufferAttribute(positionAttribute, b.toInt());
