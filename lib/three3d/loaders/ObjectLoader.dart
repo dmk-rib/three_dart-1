@@ -446,7 +446,7 @@ class ObjectLoader extends Loader {
     return textures;
   }
 
-  parseObject(
+  Object3D parseObject(
       Map<String, dynamic> data, geometries, materials, textures, animations) {
     var object;
 

@@ -54,7 +54,7 @@ class ConvexHull {
     object.updateMatrixWorld(true);
 
     object.traverse((node) {
-      var point;
+      Vector3 point;
 
       var geometry = node.geometry;
 
