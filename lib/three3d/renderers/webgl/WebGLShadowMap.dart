@@ -123,7 +123,7 @@ class WebGLShadowMap {
       }
 
       if (shadow.map == null &&
-          !shadow.isPointLightShadow &&
+          shadow is! PointLightShadow &&
           type == VSMShadowMap) {
         var pars = WebGLRenderTargetOptions({
           "minFilter": LinearFilter,
