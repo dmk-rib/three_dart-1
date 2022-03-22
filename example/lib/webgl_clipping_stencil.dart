@@ -189,7 +189,7 @@ class _State extends State<webgl_clipping_stencil> {
     renderer!.setSize(width, height, false);
     renderer!.shadowMap.enabled = true;
     renderer!.localClippingEnabled = true;
-    renderer!.setClearColor(0x263238);
+    renderer!.setClearColor(THREE.Color.fromHex(0x263238));
 
     if (!kIsWeb) {
       var pars = THREE.WebGLRenderTargetOptions({"format": THREE.RGBAFormat});
