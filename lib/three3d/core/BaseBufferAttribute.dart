@@ -23,10 +23,5 @@ abstract class BaseBufferAttribute<TData extends NativeArray> {
   int? buffer;
   int? elementSize;
 
-  bool isGLBufferAttribute = false;
-  bool isInterleavedBufferAttribute = false;
-  bool isInstancedBufferAttribute = false;
-  bool isFloat16BufferAttribute = false;
-
   BaseBufferAttribute();
 }

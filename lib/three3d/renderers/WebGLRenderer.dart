@@ -465,7 +465,7 @@ class WebGLRenderer {
         programCache.releaseProgram(program);
       });
 
-      if (material.isShaderMaterial) {
+      if (material is ShaderMaterial) {
         programCache.releaseShaderCache(material);
       }
     }

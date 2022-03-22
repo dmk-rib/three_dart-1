@@ -365,12 +365,12 @@ class Uint32BufferAttribute extends BufferAttribute<Uint32Array> {
   }
 }
 
-// class Float16BufferAttribute extends BufferAttribute {
-//   Float16BufferAttribute(array, int itemSize, [bool normalized = false])
-//       : super(array, itemSize, normalized) {
-//     type = "Float16BufferAttribute";
-//   }
-// }
+class Float16BufferAttribute extends BufferAttribute {
+  Float16BufferAttribute(array, int itemSize, [bool normalized = false])
+      : super(array, itemSize, normalized) {
+    type = "Float16BufferAttribute";
+  }
+}
 
 class Float32BufferAttribute extends BufferAttribute<Float32Array> {
   Float32BufferAttribute(Float32Array array, int itemSize,

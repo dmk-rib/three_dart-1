@@ -276,7 +276,7 @@ class BufferGeometry with EventDispatcher {
     var position = attributes["position"];
     var morphAttributesPosition = morphAttributes["position"];
 
-    if (position != null && position.isGLBufferAttribute) {
+    if (position != null && position is GLBufferAttribute) {
       print(
           'THREE.BufferGeometry.computeBoundingBox(): GLBufferAttribute requires a manual bounding box. Alternatively set "mesh.frustumCulled" to "false". ${this}');
 
@@ -330,7 +330,7 @@ class BufferGeometry with EventDispatcher {
     var position = attributes["position"];
     var morphAttributesPosition = morphAttributes["position"];
 
-    if (position != null && position.isGLBufferAttribute) {
+    if (position != null && position is GLBufferAttribute) {
       boundingSphere!.set(Vector3.init(), 99999999999);
 
       return;

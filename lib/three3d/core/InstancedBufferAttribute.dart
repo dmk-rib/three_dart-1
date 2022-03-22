@@ -7,7 +7,6 @@ class InstancedBufferAttribute extends BufferAttribute {
       [bool normalized = false, this.meshPerAttribute = 1])
       : super(array, itemSize, normalized) {
     type = "InstancedBufferAttribute";
-    isInstancedBufferAttribute = true;
     // if ( normalized is num ) {
     //   meshPerAttribute = normalized;
     //   normalized = false;
