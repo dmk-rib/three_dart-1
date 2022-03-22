@@ -1,7 +1,7 @@
 part of three_core;
 
 class InstancedBufferAttribute extends BufferAttribute {
-  late num meshPerAttribute;
+  late int meshPerAttribute;
 
   InstancedBufferAttribute(NativeArray array, int itemSize,
       [bool normalized = false, this.meshPerAttribute = 1])

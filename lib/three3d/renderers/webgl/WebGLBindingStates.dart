@@ -16,7 +16,11 @@ class WebGLBindingStates {
   late Map<int, dynamic> bindingStates;
 
   WebGLBindingStates(
-      this.gl, this.extensions, this.attributes, this.capabilities) {
+    this.gl,
+    this.extensions,
+    this.attributes,
+    this.capabilities,
+  ) {
     maxVertexAttributes = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
 
     bindingStates = <int, dynamic>{};
@@ -30,8 +34,13 @@ class WebGLBindingStates {
     currentState = defaultState;
   }
 
-  void setup(Object3D object, Material material, WebGLProgram program,
-      BufferGeometry geometry, BufferAttribute? index) {
+  void setup(
+    Object3D object,
+    Material material,
+    WebGLProgram program,
+    BufferGeometry geometry,
+    BufferAttribute? index,
+  ) {
     bool updateBuffers = false;
 
     if (vaoAvailable) {
@@ -103,7 +112,11 @@ class WebGLBindingStates {
     return extension.deleteVertexArrayOES(vao);
   }
 
-  getBindingState(geometry, program, material) {
+  getBindingState(
+    BufferGeometry geometry,
+    program,
+    Material material,
+  ) {
     var wireframe = (material.wireframe == true);
 
     var programMap = bindingStates[geometry.id];
@@ -156,38 +169,32 @@ class WebGLBindingStates {
     };
   }
 
-  needsUpdate(geometry, index) {
+  bool needsUpdate(BufferGeometry geometry, BufferAttribute? index) {
     var cachedAttributes = currentState["attributes"];
     var geometryAttributes = geometry.attributes;
-
     var attributesNum = 0;
 
-    geometryAttributes.keys.forEach((key) {
+    for (var key in geometryAttributes.keys) {
       var cachedAttribute = cachedAttributes[key];
       var geometryAttribute = geometryAttributes[key];
 
       if (cachedAttribute == null) return true;
-
       if (cachedAttribute["attribute"] != geometryAttribute) return true;
-
       if (cachedAttribute["data"] != geometryAttribute.data) return true;
-
       attributesNum++;
-    });
+    }
 
     if (currentState["attributesNum"] != attributesNum) return true;
-
     if (currentState["index"] != index) return true;
-
     return false;
   }
 
-  saveCache(geometry, index) {
+  void saveCache(BufferGeometry geometry, BufferAttribute? index) {
     var cache = {};
     var attributes = geometry.attributes;
     var attributesNum = 0;
 
-    attributes.keys.forEach((key) {
+    for (var key in attributes.keys) {
       var attribute = attributes[key];
 
       var data = {};
@@ -200,7 +207,7 @@ class WebGLBindingStates {
       cache[key] = data;
 
       attributesNum++;
-    });
+    }
 
     currentState["attributes"] = cache;
     currentState["attributesNum"] = attributesNum;
@@ -208,7 +215,7 @@ class WebGLBindingStates {
     currentState["index"] = index;
   }
 
-  initAttributes() {
+  void initAttributes() {
     var newAttributes = currentState["newAttributes"];
 
     for (var i = 0, il = newAttributes.length; i < il; i++) {
@@ -263,7 +270,11 @@ class WebGLBindingStates {
   }
 
   void setupVertexAttributes(
-      object, Material material, program, BufferGeometry geometry) {
+    Object3D object,
+    Material material,
+    WebGLProgram program,
+    BufferGeometry geometry,
+  ) {
     if (capabilities.isWebGL2 == false &&
         (object.isInstancedMesh || geometry.isInstancedBufferGeometry)) {
       if (extensions.get('ANGLE_instanced_arrays') == null) return;
@@ -282,13 +293,15 @@ class WebGLBindingStates {
 
       if (programAttribute["location"] >= 0) {
         // var geometryAttribute = geometryAttributes[ name ];
-        var geometryAttribute = geometryAttributes[name];
+        BufferAttribute? geometryAttribute = geometryAttributes[name];
 
         if (geometryAttribute == null) {
-          if (name == 'instanceMatrix' && object.instanceMatrix != null) {
+          if (name == 'instanceMatrix' && object is InstancedMesh) {
             geometryAttribute = object.instanceMatrix;
           }
-          if (name == 'instanceColor' && object.instanceColor != null) {
+          if (name == 'instanceColor' &&
+              object is InstancedMesh &&
+              object.instanceColor != null) {
             geometryAttribute = object.instanceColor;
           }
         }
@@ -311,12 +324,12 @@ class WebGLBindingStates {
           var type = attribute["type"];
           var bytesPerElement = attribute["bytesPerElement"];
 
-          if (geometryAttribute.isInterleavedBufferAttribute) {
+          if (geometryAttribute is InterleavedBufferAttribute) {
             var data = geometryAttribute.data;
-            var stride = data.stride;
+            var stride = data?.stride;
             var offset = geometryAttribute.offset;
 
-            if (data != null && data.type == "InstancedInterleavedBuffer") {
+            if (data != null && data is InstancedInterleavedBuffer) {
               // enableAttributeAndDivisor( programAttribute, data.meshPerAttribute );
               for (var i = 0; i < programAttribute["locationSize"]; i++) {
                 enableAttributeAndDivisor(
@@ -343,12 +356,12 @@ class WebGLBindingStates {
                   size ~/ programAttribute["locationSize"],
                   type,
                   normalized,
-                  stride * bytesPerElement,
+                  stride! * bytesPerElement,
                   (offset + (size ~/ programAttribute["locationSize"]) * i) *
                       bytesPerElement);
             }
           } else {
-            if (geometryAttribute.isInstancedBufferAttribute) {
+            if (geometryAttribute is InstancedBufferAttribute) {
               // enableAttributeAndDivisor( programAttribute, geometryAttribute.meshPerAttribute );
               for (var i = 0; i < programAttribute["locationSize"]; i++) {
                 enableAttributeAndDivisor(programAttribute["location"] + i,
