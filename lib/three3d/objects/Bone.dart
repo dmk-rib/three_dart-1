@@ -8,8 +8,6 @@ class Bone extends Object3D {
 
   @override
   Bone clone([bool? recursive]) {
-    final bone = Bone();
-    bone.copy(this, recursive);
-    return bone;
+    return Bone()..copy(this, recursive);
   }
 }
