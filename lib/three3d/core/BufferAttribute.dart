@@ -257,7 +257,7 @@ abstract class BufferAttribute<TData extends NativeArray>
     return this;
   }
 
-  BufferAttribute onUpload(callback) {
+  BufferAttribute onUpload(void Function()? callback) {
     onUploadCallback = callback;
 
     return this;
@@ -281,7 +281,7 @@ abstract class BufferAttribute<TData extends NativeArray>
     }
   }
 
-  toJSON([data]) {
+  Map<String, dynamic> toJSON([data]) {
     // print(" BufferAttribute to JSON todo  ${this.array.runtimeType} ");
 
     // return {

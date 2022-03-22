@@ -18,7 +18,7 @@ abstract class BaseBufferAttribute<TData extends NativeArray> {
   int version = 0;
   Map<String, int>? updateRange;
 
-  Function? onUploadCallback;
+  void Function()? onUploadCallback;
 
   int? buffer;
   int? elementSize;

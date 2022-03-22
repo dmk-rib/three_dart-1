@@ -1135,8 +1135,8 @@ class WebGLRenderer {
     materialProperties["toneMapping"] = parameters.toneMapping;
   }
 
-  WebGLProgram setProgram(Camera camera, Object3D? scene, BufferGeometry? geometry,
-      Material material, Object3D object) {
+  WebGLProgram setProgram(Camera camera, Object3D? scene,
+      BufferGeometry? geometry, Material material, Object3D object) {
     if (scene is! Scene) scene = _emptyScene;
     // scene could be a Mesh, Line, Points, ...
     textures.resetTextureUnits();
@@ -1398,8 +1398,8 @@ class WebGLRenderer {
         materials.refreshFogUniforms(mUniforms, fog);
       }
 
-      materials.refreshMaterialUniforms(mUniforms, material, _pixelRatio,
-          _height, _transmissionRenderTarget);
+      materials.refreshMaterialUniforms(
+          mUniforms, material, _pixelRatio, _height, _transmissionRenderTarget);
 
       // print("m_uniforms  ");
       // print(m_uniforms);
@@ -1799,7 +1799,7 @@ class WebGLRenderer {
     return textureProperties["__webglTexture"];
   }
 
-  resetState() {
+  void resetState() {
     _currentActiveCubeFace = 0;
     _currentActiveMipmapLevel = 0;
     _currentRenderTarget = null;

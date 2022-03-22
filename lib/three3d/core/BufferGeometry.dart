@@ -88,7 +88,8 @@ class BufferGeometry with EventDispatcher {
 
     if (index is List) {
       final list = index.map<int>((e) => e.toInt()).toList();
-      if (arrayMax(index) > 65535) {
+      final max = arrayMax(list);
+      if (max != null && max > 65535) {
         this.index = Uint32BufferAttribute(Uint32Array.from(list), 1, false);
       } else {
         this.index = Uint16BufferAttribute(Uint16Array.from(list), 1, false);
@@ -826,8 +827,8 @@ class BufferGeometry with EventDispatcher {
       data["data"]["attributes"][key] = attribute.toJSON();
     }
 
-    var morphAttributes = {};
-    var hasMorphAttributes = false;
+    Map<String, List<BufferAttribute>> morphAttributes = {};
+    bool hasMorphAttributes = false;
 
     for (var key in morphAttributes.keys) {
       var attributeArray = this.morphAttributes[key]!;
@@ -839,9 +840,9 @@ class BufferGeometry with EventDispatcher {
 
         // TODO
         // var attributeData = attribute.toJSON( data["data"] );
-        var attributeData = attribute.toJSON();
+        //var attributeData = attribute.toJSON();
 
-        array.add(attributeData);
+        array.add(attribute);
       }
 
       if (array.isNotEmpty) {

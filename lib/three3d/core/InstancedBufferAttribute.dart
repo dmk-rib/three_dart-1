@@ -25,13 +25,10 @@ class InstancedBufferAttribute extends BufferAttribute {
   }
 
   @override
-  toJSON([data]) {
+  Map<String, dynamic> toJSON([data]) {
     var result = super.toJSON();
-
-    result.meshPerAttribute = meshPerAttribute;
-
-    result.isInstancedBufferAttribute = true;
-
+    result['meshPerAttribute'] = meshPerAttribute;
+    result['isInstancedBufferAttribute'] = true;
     return result;
   }
 }
