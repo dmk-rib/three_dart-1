@@ -14,7 +14,6 @@ class BufferGeometry with EventDispatcher {
   String uuid = MathUtils.generateUUID();
 
   String type = "BufferGeometry";
-  bool isBufferGeometry = true;
   Box3? boundingBox;
   String name = "";
   Map<String, dynamic> attributes = {};
@@ -36,10 +35,8 @@ class BufferGeometry with EventDispatcher {
   bool colorsNeedUpdate = false;
   bool lineDistancesNeedUpdate = false;
   bool groupsNeedUpdate = false;
-  bool isInstancedBufferGeometry = false;
 
   late List<Color> colors;
-  bool isGeometry = false;
   late List<num> lineDistances;
 
   Map<String, dynamic>? parameters;

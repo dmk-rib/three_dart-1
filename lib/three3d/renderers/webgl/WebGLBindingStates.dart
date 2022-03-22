@@ -276,7 +276,7 @@ class WebGLBindingStates {
     BufferGeometry geometry,
   ) {
     if (capabilities.isWebGL2 == false &&
-        (object.isInstancedMesh || geometry.isInstancedBufferGeometry)) {
+        (object is InstancedMesh || geometry is InstancedBufferGeometry)) {
       if (extensions.get('ANGLE_instanced_arrays') == null) return;
     }
 
@@ -336,7 +336,7 @@ class WebGLBindingStates {
                     programAttribute["location"] + i, data.meshPerAttribute);
               }
 
-              if (object.isInstancedMesh != true &&
+              if (object is! InstancedMesh &&
                   geometry.maxInstanceCount == null) {
                 geometry.maxInstanceCount = data.meshPerAttribute * data.count;
               }

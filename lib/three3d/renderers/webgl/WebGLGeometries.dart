@@ -35,7 +35,7 @@ class WebGLGeometries {
 
     bindingStates.releaseStatesOfGeometry(geometry);
 
-    if (geometry.isInstancedBufferGeometry == true) {
+    if (geometry is InstancedBufferGeometry) {
       // geometry.remove("maxInstanceCount");
       geometry.maxInstanceCount = null;
     }
