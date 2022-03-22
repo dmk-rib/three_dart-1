@@ -216,11 +216,11 @@ class WebGLBindingStates {
     }
   }
 
-  enableAttribute(attribute) {
+  void enableAttribute(attribute) {
     enableAttributeAndDivisor(attribute, 0);
   }
 
-  enableAttributeAndDivisor(attribute, meshPerAttribute) {
+  void enableAttributeAndDivisor(attribute, meshPerAttribute) {
     var newAttributes = currentState["newAttributes"];
     var enabledAttributes = currentState["enabledAttributes"];
     var attributeDivisors = currentState["attributeDivisors"];
@@ -241,7 +241,7 @@ class WebGLBindingStates {
     }
   }
 
-  disableUnusedAttributes() {
+  void disableUnusedAttributes() {
     var newAttributes = currentState["newAttributes"];
     var enabledAttributes = currentState["enabledAttributes"];
 
@@ -253,7 +253,7 @@ class WebGLBindingStates {
     }
   }
 
-  vertexAttribPointer(index, size, type, normalized, stride, offset) {
+  void vertexAttribPointer(index, size, type, normalized, stride, offset) {
     if (capabilities.isWebGL2 == true &&
         (type == gl.INT || type == gl.UNSIGNED_INT)) {
       gl.vertexAttribIPointer(index, size, type, stride, offset);
@@ -262,7 +262,8 @@ class WebGLBindingStates {
     }
   }
 
-  setupVertexAttributes(object, material, program, geometry) {
+  void setupVertexAttributes(
+      object, Material material, program, BufferGeometry geometry) {
     if (capabilities.isWebGL2 == false &&
         (object.isInstancedMesh || geometry.isInstancedBufferGeometry)) {
       if (extensions.get('ANGLE_instanced_arrays') == null) return;
@@ -354,8 +355,8 @@ class WebGLBindingStates {
                     geometryAttribute.meshPerAttribute);
               }
 
-              geometry.maxInstanceCount ??= geometryAttribute.meshPerAttribute *
-                    geometryAttribute.count;
+              geometry.maxInstanceCount ??=
+                  geometryAttribute.meshPerAttribute * geometryAttribute.count;
             } else {
               // enableAttribute( programAttribute );
               for (var i = 0; i < programAttribute["locationSize"]; i++) {
@@ -405,7 +406,7 @@ class WebGLBindingStates {
     disableUnusedAttributes();
   }
 
-  dispose() {
+  void dispose() {
     reset();
 
     // for ( var geometryId in bindingStates ) {
@@ -433,7 +434,7 @@ class WebGLBindingStates {
     // }
   }
 
-  releaseStatesOfGeometry(geometry) {
+  void releaseStatesOfGeometry(BufferGeometry geometry) {
     if (bindingStates[geometry.id] == null) return;
 
     var programMap = bindingStates[geometry.id];
@@ -449,7 +450,7 @@ class WebGLBindingStates {
     bindingStates.remove(geometry.id);
   }
 
-  releaseStatesOfProgram(program) {
+  void releaseStatesOfProgram(program) {
     print(" WebGLBindingStates releaseStatesOfProgram ");
 
     // for ( var geometryId in bindingStates ) {
@@ -473,7 +474,7 @@ class WebGLBindingStates {
     // }
   }
 
-  reset() {
+  void reset() {
     resetDefaultState();
 
     if (currentState == defaultState) return;
@@ -484,7 +485,7 @@ class WebGLBindingStates {
 
   // for backward-compatilibity
 
-  resetDefaultState() {
+  void resetDefaultState() {
     defaultState["geometry"] = null;
     defaultState["program"] = null;
     defaultState["wireframe"] = false;
